@@ -1,4 +1,5 @@
 import menuData from '../data/menu.json';
+import drinksData from '../data/drinks.json';
 import hoursData from '../data/hours.json';
 import eventsData from '../data/events.json';
 import faqData from '../data/faq.json';
@@ -12,47 +13,108 @@ export function formatMenuData(): string {
   
   // Pizza section
   formatted += "**PIZZAS:**\n";
-  menuData.pizza.items.forEach(pizza => {
-    formatted += `• ${pizza.name} - €${pizza.price.toFixed(2)}${pizza.dietary ? ` (${pizza.dietary})` : ''}\n`;
+  menuData.categories.pizza.items.forEach(pizza => {
+    formatted += `• ${pizza.name} - €${pizza.price.toFixed(2)}${pizza.dietary ? ` (${pizza.dietary.join(', ')})` : ''}\n`;
   });
 
   // Draft beers section
   formatted += "\n**BEERS ON TAP:**\n";
-  menuData.draft_beers.items.forEach(beer => {
-    formatted += `• ${beer.name} - €${beer.prices["0.3l"].toFixed(2)} (0.3L) / €${beer.prices["0.5l"].toFixed(2)} (0.5L)\n`;
+  menuData.categories.draft_beers.items.forEach(beer => {
+    formatted += `• ${beer.name} - €${beer.sizes.small.price.toFixed(2)} (${beer.sizes.small.volume}) / €${beer.sizes.large.price.toFixed(2)} (${beer.sizes.large.volume})\n`;
   });
 
   // Cocktails section
   formatted += "\n**COCKTAILS:**\n";
-  menuData.cocktails.items.forEach(cocktail => {
-    formatted += `• ${cocktail.name} - €${cocktail.price.toFixed(2)}\n`;
+  menuData.categories.cocktails.items.forEach(cocktail => {
+    formatted += `• ${cocktail.name} - €${cocktail.price.toFixed(2)}${cocktail.category === 'non-alcoholic' ? ' (alcohol-free)' : ''}\n`;
   });
 
   // Long drinks section
   formatted += "\n**LONG DRINKS:**\n";
-  formatted += `All long drinks €${menuData.long_drinks.price.toFixed(2)}:\n`;
-  menuData.long_drinks.items.slice(0, 5).forEach(drink => {
-    formatted += `• ${drink}\n`;
+  formatted += `All long drinks €${menuData.categories.long_drinks.base_price.toFixed(2)}:\n`;
+  menuData.categories.long_drinks.items.slice(0, 5).forEach(drink => {
+    formatted += `• ${drink.name}\n`;
   });
   formatted += "...and more!\n";
 
   // Snacks section
   formatted += "\n**SNACKS:**\n";
-  menuData.snacks.items.forEach(snack => {
-    formatted += `• ${snack.name} - €${snack.price.toFixed(2)}\n`;
+  menuData.categories.snacks.items.forEach(snack => {
+    formatted += `• ${snack.name} - €${snack.price.toFixed(2)}${snack.description ? ` (${snack.description})` : ''}\n`;
   });
 
-  formatted += "\n**NOTE:** This is a selection of our menu. For our complete selection of beers, spirits, and other drinks, please ask at the bar or check Untappd.\n";
-  formatted += "All prices include VAT. Menu items and prices subject to change.\n";
+  formatted += "\n**NOTES:**\n";
+  menuData.menu_notes.forEach(note => {
+    formatted += `• ${note}\n`;
+  });
 
   return formatted;
+}
+
+/**
+ * Format drinks data for GPT context
+ */
+export function formatDrinksData(): string {
+  let formatted = "**DRINKS MENU:**\n\n";
+
+  // Whiskey section
+  formatted += "**WHISKEY:**\n";
+  Object.entries(drinksData.categories.whiskey).forEach(([type, data]) => {
+    formatted += `\n${data.name}:\n`;
+    data.items.forEach(whiskey => {
+      formatted += `• ${whiskey.name} - €${whiskey.sizes.small.price.toFixed(2)} (${whiskey.sizes.small.volume}) / €${whiskey.sizes.large.price.toFixed(2)} (${whiskey.sizes.large.volume})\n`;
+    });
+  });
+
+  // Bottled beers section
+  formatted += "\n**BOTTLED BEERS:**\n";
+  drinksData.categories.bottled_beers.items.forEach(beer => {
+    formatted += `• ${beer.name} - €${beer.price.toFixed(2)}${beer.is_local ? ' (local)' : ''}\n`;
+  });
+
+  // Ciders section
+  formatted += "\n**CIDERS:**\n";
+  drinksData.categories.ciders.items.forEach(cider => {
+    formatted += `• ${cider.name} (${cider.size}) - €${cider.price.toFixed(2)}\n`;
+    if (cider.variants.length > 0) {
+      formatted += `  Flavors: ${cider.variants.join(', ')}\n`;
+    }
+  });
+
+  // Hot drinks section
+  formatted += "\n**HOT DRINKS:**\n";
+  drinksData.categories.hot_drinks.items.forEach(drink => {
+    formatted += `• ${drink.name} - €${drink.price.toFixed(2)}\n`;
+  });
+  if (drinksData.categories.hot_drinks.extras) {
+    formatted += "\nExtras:\n";
+    drinksData.categories.hot_drinks.extras.forEach(extra => {
+      formatted += `• ${extra.name} - €${extra.price.toFixed(2)}\n`;
+    });
+  }
+
+  // Soft drinks section
+  formatted += "\n**SOFT DRINKS:**\n";
+  drinksData.categories.soft_drinks.items.forEach(drink => {
+    formatted += `• ${drink.name}${drink.size ? ` (${drink.size})` : ''} - €${drink.price.toFixed(2)}\n`;
+  });
+
+  return formatted;
+}
+
+interface RegularHours {
+  status: string;
+  hours?: {
+    from: string;
+    to: string;
+  };
 }
 
 /**
  * Format opening hours for GPT context
  */
 export function formatHoursData(): string {
-  const { opening_hours, special_notes } = hoursData;
+  const { regular_hours, holiday_hours, notes } = hoursData;
   
   let formatted = "**OPENING HOURS:**\n\n";
   
@@ -60,16 +122,23 @@ export function formatHoursData(): string {
   const dayNames = ['Monday', 'Tuesday', 'Wednesday', 'Thursday', 'Friday', 'Saturday', 'Sunday'];
   
   days.forEach((day, index) => {
-    const hours = opening_hours[day as keyof typeof opening_hours];
+    const hours = regular_hours[day as keyof typeof regular_hours] as RegularHours;
     if (hours.status === 'closed') {
       formatted += `${dayNames[index]}: Closed\n`;
-    } else if ('open' in hours && 'close' in hours) {
-      formatted += `${dayNames[index]}: ${hours.open} - ${hours.close}\n`;
+    } else if (hours.hours) {
+      formatted += `${dayNames[index]}: ${hours.hours.from} - ${hours.hours.to}\n`;
     }
   });
   
-  formatted += `\n**SPECIAL NOTES:**\n`;
-  special_notes.forEach(note => {
+  if (Object.keys(holiday_hours).length > 0) {
+    formatted += `\n**HOLIDAY HOURS:**\n`;
+    Object.entries(holiday_hours).forEach(([holiday, info]) => {
+      formatted += `${info.date}: ${info.hours.from} - ${info.hours.to}\n`;
+    });
+  }
+  
+  formatted += `\n**NOTES:**\n`;
+  notes.forEach((note: string) => {
     formatted += `• ${note}\n`;
   });
   
@@ -207,21 +276,11 @@ export function getCurrentTimeContext(): string {
   const dayName = days[berlinTime.getDay()];
   const currentTime = berlinTime.toTimeString().slice(0, 5);
   
-  const { opening_hours } = hoursData;
-  const todayHours = opening_hours[dayName as keyof typeof opening_hours];
+  const { regular_hours } = hoursData;
+  const todayHours = regular_hours[dayName as keyof typeof regular_hours] as RegularHours;
   
-  if (todayHours.status === 'closed') {
-    return `**CURRENT CONTEXT:**\nDay: ${dayName.charAt(0).toUpperCase() + dayName.slice(1)}\nTime: ${currentTime} (Berlin time)\nToday's hours: Closed today`;
-  }
-  
-  // Now we know it's open and has the full structure
-  const openHours = todayHours as {
-    open: string;
-    close: string;
-    status: string;
-  };
-  
-  const hoursString = `${openHours.open}-${openHours.close}`;
+  let hoursString = todayHours.status === 'closed' ? 'Closed today' : 
+    todayHours.hours ? `${todayHours.hours.from}-${todayHours.hours.to}` : 'Check at venue';
   
   return `**CURRENT CONTEXT:**\nDay: ${dayName.charAt(0).toUpperCase() + dayName.slice(1)}\nTime: ${currentTime} (Berlin time)\nToday's hours: ${hoursString}`;
 }
