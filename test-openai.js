@@ -7,7 +7,6 @@ console.log('API Key (last 10 chars):', process.env.OPENAI_API_KEY?.slice(-10) |
 
 const openai = new OpenAI({
   apiKey: process.env.OPENAI_API_KEY,
-  project: 'proj_sbPfzENXvsKlbcCtkOgQwZ3k',
 });
 
 async function testAPI() {
