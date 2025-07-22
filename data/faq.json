@@ -1,56 +1,58 @@
 {
-  "house_rules": {
-    "pets": {
-      "allowed": true,
-      "policy": "Well-behaved dogs welcome! Please keep them on a leash and clean up after them.",
-      "restrictions": "No pets allowed during busy weekend nights (Fri-Sat after 22:00)"
+  "general_info": {
+    "concept": {
+      "type": "Self-service pub",
+      "style": "Modern craft beer pub with beer garden",
+      "specialties": ["20 rotating craft beers", "Neapolitan pizza", "Beer garden"]
     },
-    "smoking": {
-      "indoor": false,
-      "outdoor": true,
-      "policy": "Smoking is not permitted inside. Designated smoking area available in the beer garden."
+    "location": {
+      "address": "Invalidenstraße 129, 10115 Berlin",
+      "area": "Mitte",
+      "transport": "Near U6 Naturkundemuseum"
+    }
+  },
+  "service_info": {
+    "ordering": {
+      "process": "Order all food and drinks at the bar",
+      "payment": ["Cash", "Card", "Contactless"],
+      "note": "Self-service concept - no table service"
     },
-    "age_restrictions": {
-      "minimum_age": 18,
-      "id_required": true,
-      "policy": "Must be 18+ after 21:00. ID required for anyone who looks under 25."
-    },
-    "dress_code": {
-      "policy": "Smart casual. No tank tops or flip-flops.",
-      "note": "We reserve the right to refuse entry based on attire"
+    "reservations": {
+      "policy": "No reservations needed",
+      "groups": "For large groups, please contact us in advance",
+      "special_events": "Special arrangements possible for private events"
     }
   },
   "facilities": {
-    "wifi": {
-      "available": true,
-      "network": "Castle_Guest",
-      "password": "Ask staff for current password"
+    "seating": {
+      "indoor": "Spacious indoor seating",
+      "outdoor": "Beer garden (weather permitting)",
+      "groups": "Space available for groups"
     },
-    "beer_garden": {
-      "available": true,
-      "capacity": "40 people",
-      "heating": "Yes, outdoor heaters available in winter",
-      "covered": "Partially covered seating area"
-    },
-    "accessibility": {
-      "wheelchair_access": true,
-      "accessible_toilets": true,
-      "assistance": "Staff happy to help - just ask!"
+    "features": {
+      "beer_garden": "Open in good weather",
+      "screens": "Sports screenings available",
+      "wifi": "Free WiFi available"
     }
   },
-  "payment": {
-    "methods": ["Cash", "Card", "Contactless", "Mobile payments"],
-    "minimum_card": "€10 minimum for card payments",
-    "tips": "Tips appreciated but not mandatory"
+  "beer_info": {
+    "selection": {
+      "taps": "20 rotating craft and classic beers",
+      "updates": "Check Untappd for current selection",
+      "specialties": "Mix of craft and traditional beers"
+    },
+    "recommendations": {
+      "info": "Staff happy to provide recommendations",
+      "updates": "Beer menu changes regularly"
+    }
   },
-  "reservations": {
-    "policy": "Walk-ins welcome! Reservations only for groups of 8+ or special events",
-    "large_groups": "Please call ahead for groups larger than 8 people",
-    "private_hire": "Private hire available - contact us for details"
+  "food_service": {
+    "kitchen_hours": "17:00-23:00 daily",
+    "specialties": "Authentic Neapolitan pizza",
+    "ordering": "Order at the bar, food brought to your table"
   },
-  "location_info": {
-    "address": "Invalidenstraße 129, 10115 Berlin, Germany",
-    "nearest_transport": "U6 Naturkundemuseum (5 min walk)",
-    "parking": "Limited street parking available"
+  "partnerships": {
+    "sports": "Proud sponsors of Berlin Irish Rugby Club",
+    "community": "Part of Berlin's craft beer scene"
   }
 } 

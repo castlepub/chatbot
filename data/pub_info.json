@@ -1,0 +1,57 @@
+{
+  "name": "The Castle Pub",
+  "concept": {
+    "type": "Self-service pub",
+    "description": "Modern craft beer pub with authentic Neapolitan pizza",
+    "key_features": [
+      "20 rotating craft beers on tap",
+      "Neapolitan pizza",
+      "Beer garden",
+      "Self-service at bar"
+    ]
+  },
+  "location": {
+    "address": "Invalidenstraße 129",
+    "postal_code": "10115",
+    "city": "Berlin",
+    "area": "Mitte",
+    "transport": {
+      "nearest_station": "U6 Naturkundemuseum",
+      "walking_time": "5 minutes"
+    }
+  },
+  "contact": {
+    "phone": null,
+    "email": null,
+    "social": {
+      "instagram": null,
+      "facebook": null,
+      "untappd": null
+    }
+  },
+  "service": {
+    "ordering": "Order and pay at the bar",
+    "reservations": "No reservations needed",
+    "groups": "Welcome, contact for large groups",
+    "payment_methods": ["Cash", "Card", "Contactless"]
+  },
+  "facilities": {
+    "indoor": {
+      "available": true,
+      "features": ["Bar seating", "Table seating", "Standing tables"]
+    },
+    "outdoor": {
+      "available": true,
+      "type": "Beer garden",
+      "weather_dependent": true
+    },
+    "accessibility": {
+      "wheelchair_access": true,
+      "notes": []
+    }
+  },
+  "partnerships": {
+    "sports": ["Berlin Irish Rugby Club"],
+    "beer": ["Untappd", "Berlin Drinks", "Hopfenhelden"]
+  }
+} 

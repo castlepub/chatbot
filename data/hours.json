@@ -1,45 +1,72 @@
 {
-  "opening_hours": {
+  "regular_hours": {
     "monday": {
-      "status": "closed",
-      "note": "Closed on Mondays"
+      "status": "closed"
     },
     "tuesday": {
-      "open": "16:00",
-      "close": "01:00",
-      "status": "open"
+      "status": "open",
+      "hours": {
+        "from": "16:00",
+        "to": "01:00"
+      }
     },
     "wednesday": {
-      "open": "16:00",
-      "close": "01:00",
-      "status": "open"
+      "status": "open",
+      "hours": {
+        "from": "16:00",
+        "to": "01:00"
+      }
     },
     "thursday": {
-      "open": "16:00",
-      "close": "02:00",
-      "status": "open"
+      "status": "open",
+      "hours": {
+        "from": "16:00",
+        "to": "02:00"
+      }
     },
     "friday": {
-      "open": "16:00",
-      "close": "03:00",
-      "status": "open"
+      "status": "open",
+      "hours": {
+        "from": "16:00",
+        "to": "03:00"
+      }
     },
     "saturday": {
-      "open": "14:00",
-      "close": "03:00",
-      "status": "open"
+      "status": "open",
+      "hours": {
+        "from": "14:00",
+        "to": "03:00"
+      }
     },
     "sunday": {
-      "open": "14:00",
-      "close": "01:00",
-      "status": "open"
+      "status": "open",
+      "hours": {
+        "from": "14:00",
+        "to": "01:00"
+      }
     }
   },
-  "special_notes": [
-    "Self-service pub - order at the bar",
-    "No reservations needed",
-    "Beer garden open (weather permitting)",
-    "Full menu available from opening until closing",
-    "Check Untappd for current beer selection"
+  "holiday_hours": {
+    "christmas_eve": {
+      "date": "2024-12-24",
+      "status": "open",
+      "hours": {
+        "from": "14:00",
+        "to": "20:00"
+      }
+    },
+    "new_years_eve": {
+      "date": "2024-12-31",
+      "status": "open",
+      "hours": {
+        "from": "16:00",
+        "to": "04:00"
+      }
+    }
+  },
+  "notes": [
+    "Kitchen and full menu available during all opening hours",
+    "Last orders 30 minutes before closing",
+    "Beer garden open during regular hours (weather permitting)"
   ]
 } 

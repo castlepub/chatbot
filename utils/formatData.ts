@@ -187,34 +187,41 @@ export function formatHoursData(): string {
  * Format events data for GPT context
  */
 export function formatEventsData(): string {
-  const { regular_features, special_features, venue_info } = eventsData;
+  // Add safety checks for the data structure
+  const events = (eventsData as any).events || [];
+  const recurring = (eventsData as any).recurring || [];
+  const features = (eventsData as any).features || [];
   
-  let formatted = "**VENUE FEATURES & INFORMATION:**\n\n";
+  let formatted = "**UPCOMING EVENTS:**\n\n";
   
-  formatted += "**REGULAR FEATURES:**\n";
-  Object.entries(regular_features).forEach(([key, feature]: [string, EventFeature]) => {
-    formatted += `• ${feature.name}\n`;
-    formatted += `  ${feature.description}\n`;
-    if (feature.availability) formatted += `  Availability: ${feature.availability}\n`;
-    if (feature.seating) formatted += `  Seating: ${feature.seating}\n`;
-    if (feature.note) formatted += `  Note: ${feature.note}\n`;
+  // Regular events
+  if (events.length > 0) {
+    formatted += "**SPECIAL EVENTS:**\n";
+    events.slice(0, 3).forEach((event: any) => {
+      formatted += `• ${event.name || 'Event'} - ${event.date || 'TBA'}\n`;
+      if (event.description) {
+        formatted += `  ${event.description}\n`;
+      }
+    });
     formatted += "\n";
-  });
+  }
   
-  formatted += "**SPECIAL FEATURES:**\n";
-  Object.entries(special_features).forEach(([key, feature]: [string, EventFeature]) => {
-    formatted += `• ${feature.name}\n`;
-    formatted += `  ${feature.description}\n`;
-    if (feature.rotation) formatted += `  ${feature.rotation}\n`;
-    if (feature.info) formatted += `  ${feature.info}\n`;
-    if (feature.style) formatted += `  Style: ${feature.style}\n`;
+  // Recurring events
+  if (recurring.length > 0) {
+    formatted += "**REGULAR EVENTS:**\n";
+    recurring.forEach((event: any) => {
+      formatted += `• ${event.name || 'Regular Event'} - ${event.schedule || 'Check for updates'}\n`;
+    });
     formatted += "\n";
-  });
+  }
   
-  formatted += "**VENUE INFORMATION:**\n";
-  formatted += `• Atmosphere: ${venue_info.atmosphere}\n`;
-  formatted += `• Location: ${venue_info.location}\n`;
-  formatted += `• Specialties: ${venue_info.specialties.join(', ')}\n`;
+  // Event features
+  if (features.length > 0) {
+    formatted += "**EVENT FEATURES:**\n";
+    features.forEach((feature: any) => {
+      formatted += `• ${feature.name || 'Feature'}: ${feature.description || 'Available'}\n`;
+    });
+  }
   
   return formatted;
 }
@@ -223,28 +230,48 @@ export function formatEventsData(): string {
  * Format FAQ data for GPT context
  */
 export function formatFAQData(): string {
-  const { general_info, service_info, facilities } = faqData;
+  // Add safety checks for the data structure
+  const general_info = (faqData as any).general_info || {};
+  const service_info = (faqData as any).service_info || {};
+  const facilities = (faqData as any).facilities || {};
   
   let formatted = "**GENERAL INFORMATION:**\n\n";
   
-  // General info section
-  formatted += "**ABOUT US:**\n";
-  formatted += `• Type: ${general_info.concept.type}\n`;
-  formatted += `• Style: ${general_info.concept.style}\n`;
-  formatted += `• Specialties: ${general_info.concept.specialties.join(', ')}\n\n`;
+  // General info section with safety checks
+  if (general_info.concept) {
+    formatted += "**ABOUT US:**\n";
+    formatted += `• Type: ${general_info.concept.type || 'Self-service pub'}\n`;
+    formatted += `• Style: ${general_info.concept.style || 'Modern craft beer pub'}\n`;
+    formatted += `• Specialties: ${general_info.concept.specialties ? general_info.concept.specialties.join(', ') : '20 rotating craft beers, Neapolitan pizza'}\n\n`;
+  } else {
+    // Fallback for missing concept data
+    formatted += "**ABOUT US:**\n";
+    formatted += `• Type: Self-service pub\n`;
+    formatted += `• Style: Modern craft beer pub with beer garden\n`;
+    formatted += `• Specialties: 20 rotating craft beers, Neapolitan pizza, Beer garden\n\n`;
+  }
   
-  // Service info section
-  formatted += "**SERVICE:**\n";
-  formatted += `• Ordering: ${service_info.ordering.process}\n`;
-  formatted += `• Payment: ${service_info.ordering.payment.join(', ')}\n`;
-  formatted += `• Reservations: ${service_info.reservations.policy}\n`;
-  formatted += `• Groups: ${service_info.reservations.groups}\n\n`;
+  // Service info section with safety checks
+  if (service_info.ordering) {
+    formatted += "**SERVICE:**\n";
+    formatted += `• Ordering: ${service_info.ordering.process || 'Order at the bar'}\n`;
+    formatted += `• Payment: ${service_info.ordering.payment ? service_info.ordering.payment.join(', ') : 'Card, Cash'}\n`;
+    if (service_info.reservations) {
+      formatted += `• Reservations: ${service_info.reservations.policy || 'Walk-ins welcome'}\n`;
+    }
+    formatted += "\n";
+  }
   
-  // Facilities section
-  formatted += "**FACILITIES:**\n";
-  formatted += `• Indoor: ${facilities.seating.indoor}\n`;
-  formatted += `• Outdoor: ${facilities.seating.outdoor}\n`;
-  formatted += `• Features: ${Object.values(facilities.features).join(', ')}\n`;
+  // Facilities section with safety checks
+  if (facilities.seating) {
+    formatted += "**FACILITIES:**\n";
+    formatted += `• Indoor seating: ${facilities.seating.indoor || 'Available'}\n`;
+    formatted += `• Outdoor seating: ${facilities.seating.outdoor || 'Beer garden available'}\n`;
+    if (facilities.accessibility) {
+      formatted += `• Accessibility: ${facilities.accessibility.wheelchair || 'Please ask staff'}\n`;
+    }
+    formatted += "\n";
+  }
   
   return formatted;
 }
@@ -273,32 +300,36 @@ export function formatFacilitiesData(): string {
  * Format loyalty program data for GPT context
  */
 export function formatLoyaltyData(): string {
-  const { program_name, point_system, rewards, membership_tiers, api_integration } = loyaltyData;
+  // Add safety checks for the data structure
+  const program = (loyaltyData as any).program || {};
+  const benefits = (loyaltyData as any).benefits || [];
+  const tiers = (loyaltyData as any).tiers || [];
   
-  let formatted = `**${program_name.toUpperCase()}:**\n\n`;
+  let formatted = "**LOYALTY PROGRAM:**\n\n";
   
-  formatted += "**POINT SYSTEM:**\n";
-  formatted += `• Earning: ${point_system.earning_rate}\n`;
-  formatted += `• Happy Hour Bonus: ${point_system.bonus_earning.happy_hour}\n`;
-  formatted += `• Quiz Night Bonus: ${point_system.bonus_earning.quiz_night}\n`;
-  formatted += `• Birthday Bonus: ${point_system.bonus_earning.birthday_month}\n`;
+  if (program.name) {
+    formatted += `**${program.name.toUpperCase()}:**\n`;
+    if (program.description) {
+      formatted += `${program.description}\n\n`;
+    }
+  }
   
-  formatted += "\n**REWARDS:**\n";
-  Object.values(rewards).forEach(reward => {
-    formatted += `• ${reward.reward} (${reward.points_required} points)\n`;
-    formatted += `  ${reward.description}\n`;
-  });
-  
-  formatted += "\n**MEMBERSHIP TIERS:**\n";
-  Object.entries(membership_tiers).forEach(([tier, info]) => {
-    formatted += `• ${tier.toUpperCase()} (${info.min_points}+ points):\n`;
-    info.benefits.forEach(benefit => {
-      formatted += `  - ${benefit}\n`;
+  // Benefits
+  if (benefits.length > 0) {
+    formatted += "**BENEFITS:**\n";
+    benefits.forEach((benefit: any) => {
+      formatted += `• ${benefit.description || 'Member benefit'}\n`;
     });
-  });
+    formatted += "\n";
+  }
   
-  formatted += "\n**IMPORTANT NOTE:**\n";
-  formatted += `${api_integration.note}\n`;
+  // Tiers
+  if (tiers.length > 0) {
+    formatted += "**MEMBERSHIP TIERS:**\n";
+    tiers.forEach((tier: any) => {
+      formatted += `• ${tier.name || 'Tier'}: ${tier.requirements || 'Requirements vary'}\n`;
+    });
+  }
   
   return formatted;
 }
