@@ -11,9 +11,12 @@ console.log('API Key full length:', process.env.OPENAI_API_KEY?.length || 0);
 console.log('=====================');
 
 // Initialize OpenAI client
+const apiKey = process.env.OPENAI_API_KEY || '';
+const projectId = apiKey.match(/sk-proj-([^_]+)/)?.[1];
+
 const openai = new OpenAI({
-  apiKey: process.env.OPENAI_API_KEY,
-  organization: process.env.OPENAI_ORG_ID
+  apiKey: apiKey,
+  defaultQuery: { 'project': `proj_${projectId}` }
 });
 
 // Castle Concierge system prompt
