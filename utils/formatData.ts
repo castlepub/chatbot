@@ -219,10 +219,9 @@ export function getCurrentTimeContext(): string {
     open: string;
     close: string;
     status: string;
-    kitchen: { open: string; close: string; };
   };
   
-  const hoursString = `${openHours.open}-${openHours.close} (Kitchen: ${openHours.kitchen.open}-${openHours.kitchen.close})`;
+  const hoursString = `${openHours.open}-${openHours.close}`;
   
   return `**CURRENT CONTEXT:**\nDay: ${dayName.charAt(0).toUpperCase() + dayName.slice(1)}\nTime: ${currentTime} (Berlin time)\nToday's hours: ${hoursString}`;
 }

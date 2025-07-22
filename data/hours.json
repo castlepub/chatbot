@@ -1,36 +1,37 @@
 {
   "opening_hours": {
     "monday": {
-      "status": "closed"
+      "status": "closed",
+      "note": "Closed on Mondays"
     },
     "tuesday": {
-      "open": "17:00",
-      "close": "00:00",
+      "open": "16:00",
+      "close": "01:00",
       "status": "open"
     },
     "wednesday": {
-      "open": "17:00",
-      "close": "00:00",
+      "open": "16:00",
+      "close": "01:00",
       "status": "open"
     },
     "thursday": {
-      "open": "17:00",
-      "close": "00:00",
+      "open": "16:00",
+      "close": "02:00",
       "status": "open"
     },
     "friday": {
-      "open": "17:00",
-      "close": "02:00",
+      "open": "16:00",
+      "close": "03:00",
       "status": "open"
     },
     "saturday": {
-      "open": "15:00",
-      "close": "02:00",
+      "open": "14:00",
+      "close": "03:00",
       "status": "open"
     },
     "sunday": {
-      "open": "15:00",
-      "close": "00:00",
+      "open": "14:00",
+      "close": "01:00",
       "status": "open"
     }
   },
@@ -38,6 +39,7 @@
     "Self-service pub - order at the bar",
     "No reservations needed",
     "Beer garden open (weather permitting)",
-    "Check our social media for special event hours"
+    "Full menu available from opening until closing",
+    "Check Untappd for current beer selection"
   ]
 } 
