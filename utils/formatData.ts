@@ -8,30 +8,33 @@ import loyaltyData from '../data/loyalty.json';
  * Format menu data for GPT context
  */
 export function formatMenuData(): string {
-  const { food, cocktails, spirits, beer_info } = menuData;
+  const { concept, food, beer, location } = menuData;
   
   let formatted = "**MENU INFORMATION:**\n\n";
   
+  // Concept section
+  formatted += "**CONCEPT:**\n";
+  formatted += `• Type: ${concept.type}\n`;
+  formatted += `• Specialties: ${concept.specialties.join(', ')}\n`;
+  formatted += `• Service Style: ${concept.service_style}\n\n`;
+  
   // Food section
-  formatted += "**FOOD MENU:**\n";
-  Object.values(food).forEach(item => {
-    formatted += `• ${item.name} - ${item.price}\n  ${item.description}\n`;
-  });
+  formatted += "**FOOD:**\n";
+  formatted += `• Specialty: ${food.specialty}\n`;
+  formatted += `• Style: ${food.style}\n`;
+  formatted += `• ${food.note}\n\n`;
   
-  formatted += "\n**COCKTAILS:**\n";
-  Object.values(cocktails).forEach(item => {
-    formatted += `• ${item.name} - ${item.price}\n  ${item.description}\n`;
-  });
+  // Beer section
+  formatted += "**BEER:**\n";
+  formatted += `• Number of Taps: ${beer.taps.count}\n`;
+  formatted += `• Beer Styles: ${beer.taps.styles.join(', ')}\n`;
+  formatted += `• ${beer.taps.note}\n\n`;
   
-  formatted += "\n**SPIRITS:**\n";
-  Object.values(spirits).forEach(category => {
-    formatted += `• ${category.name}: ${category.options.join(', ')}\n  Price range: ${category.price_range}\n`;
-  });
-  
-  formatted += "\n**BEER INFORMATION:**\n";
-  formatted += `• ${beer_info.note}\n`;
-  formatted += `• Typical styles: ${beer_info.typical_styles.join(', ')}\n`;
-  formatted += `• Price range: ${beer_info.price_range}\n`;
+  // Location section
+  formatted += "**LOCATION:**\n";
+  formatted += `• Address: ${location.address}\n`;
+  formatted += `• Area: ${location.area}\n`;
+  formatted += `• Features: ${location.features.join(', ')}\n`;
   
   return formatted;
 }
@@ -40,7 +43,7 @@ export function formatMenuData(): string {
  * Format opening hours for GPT context
  */
 export function formatHoursData(): string {
-  const { opening_hours, kitchen_hours, special_notes } = hoursData;
+  const { opening_hours, special_notes } = hoursData;
   
   let formatted = "**OPENING HOURS:**\n\n";
   
@@ -49,12 +52,12 @@ export function formatHoursData(): string {
   
   days.forEach((day, index) => {
     const hours = opening_hours[day as keyof typeof opening_hours];
-    formatted += `${dayNames[index]}: ${hours.open} - ${hours.close}\n`;
+    if (hours.status === 'closed') {
+      formatted += `${dayNames[index]}: Closed\n`;
+    } else if ('open' in hours && 'close' in hours) {
+      formatted += `${dayNames[index]}: ${hours.open} - ${hours.close}\n`;
+    }
   });
-  
-  formatted += `\n**KITCHEN HOURS:**\n`;
-  formatted += `Daily: ${kitchen_hours.daily.open} - ${kitchen_hours.daily.close}\n`;
-  formatted += `Note: ${kitchen_hours.daily.note}\n`;
   
   formatted += `\n**SPECIAL NOTES:**\n`;
   special_notes.forEach(note => {
@@ -68,36 +71,34 @@ export function formatHoursData(): string {
  * Format events data for GPT context
  */
 export function formatEventsData(): string {
-  const { recurring_events, special_events, event_booking } = eventsData;
+  const { regular_features, special_features, venue_info } = eventsData;
   
-  let formatted = "**EVENTS & ENTERTAINMENT:**\n\n";
+  let formatted = "**VENUE FEATURES & INFORMATION:**\n\n";
   
-  formatted += "**RECURRING EVENTS:**\n";
-  Object.values(recurring_events).forEach(event => {
-    if (Array.isArray((event as any).days)) {
-      formatted += `• ${event.name}: ${(event as any).days.join(', ')}\n`;
-    } else {
-      formatted += `• ${event.name}: ${(event as any).day} at ${(event as any).time}\n`;
-    }
-    formatted += `  ${event.description}\n`;
-    if ((event as any).prize) formatted += `  Prize: ${(event as any).prize}\n`;
-    if ((event as any).note) formatted += `  ${(event as any).note}\n`;
+  formatted += "**REGULAR FEATURES:**\n";
+  Object.entries(regular_features).forEach(([key, feature]) => {
+    formatted += `• ${feature.name}\n`;
+    formatted += `  ${feature.description}\n`;
+    if ('availability' in feature) formatted += `  Availability: ${feature.availability}\n`;
+    if ('seating' in feature) formatted += `  Seating: ${feature.seating}\n`;
+    if ('note' in feature) formatted += `  Note: ${feature.note}\n`;
     formatted += "\n";
   });
   
-  formatted += "**SPECIAL EVENTS:**\n";
-  special_events.forEach(event => {
-    formatted += `• ${event.name}\n`;
-    formatted += `  Date: ${event.date}\n`;
-    if (event.time) formatted += `  Time: ${event.time}\n`;
-    formatted += `  ${event.description}\n`;
-    if (event.advance_booking) formatted += `  Advance booking required\n`;
+  formatted += "**SPECIAL FEATURES:**\n";
+  Object.entries(special_features).forEach(([key, feature]) => {
+    formatted += `• ${feature.name}\n`;
+    formatted += `  ${feature.description}\n`;
+    if ('rotation' in feature) formatted += `  ${feature.rotation}\n`;
+    if ('info' in feature) formatted += `  ${feature.info}\n`;
+    if ('style' in feature) formatted += `  Style: ${feature.style}\n`;
     formatted += "\n";
   });
   
-  formatted += "**EVENT BOOKING:**\n";
-  formatted += `• ${event_booking.policy}\n`;
-  formatted += `• ${event_booking.contact}\n`;
+  formatted += "**VENUE INFORMATION:**\n";
+  formatted += `• Atmosphere: ${venue_info.atmosphere}\n`;
+  formatted += `• Location: ${venue_info.location}\n`;
+  formatted += `• Specialties: ${venue_info.specialties.join(', ')}\n`;
   
   return formatted;
 }
@@ -184,21 +185,12 @@ export function getCurrentTimeContext(): string {
   const { opening_hours } = hoursData;
   const todayHours = opening_hours[dayName as keyof typeof opening_hours];
   
-  let status = 'closed';
-  if (todayHours) {
-    const openTime = parseInt(todayHours.open.replace(':', ''));
-    const closeTime = parseInt(todayHours.close.replace(':', ''));
-    const currentTimeNum = parseInt(currentTime.replace(':', ''));
-    
-    // Handle overnight closing (close time is next day)
-    if (closeTime < openTime) {
-      status = (currentTimeNum >= openTime || currentTimeNum <= closeTime) ? 'open' : 'closed';
-    } else {
-      status = (currentTimeNum >= openTime && currentTimeNum <= closeTime) ? 'open' : 'closed';
-    }
-  }
+  let status = todayHours.status;
+  let hoursString = todayHours.status === 'closed' ? 'Closed' : 
+                    ('open' in todayHours && 'close' in todayHours) ? 
+                    `${todayHours.open} - ${todayHours.close}` : 'Check at venue';
   
-  return `**CURRENT CONTEXT:**\nDay: ${dayName.charAt(0).toUpperCase() + dayName.slice(1)}\nTime: ${currentTime} (Berlin time)\nStatus: Currently ${status}\nToday's hours: ${todayHours?.open} - ${todayHours?.close}`;
+  return `**CURRENT CONTEXT:**\nDay: ${dayName.charAt(0).toUpperCase() + dayName.slice(1)}\nTime: ${currentTime} (Berlin time)\nStatus: Currently ${status}\nToday's hours: ${hoursString}`;
 }
 
 /**
