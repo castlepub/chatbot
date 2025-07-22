@@ -8,13 +8,13 @@ import eventsJson from '../data/events.json';
 import faqJson from '../data/faq.json';
 import loyaltyJson from '../data/loyalty.json';
 
-// Cast imported JSON to their types
-const menuData = menuJson as MenuData;
-const drinksData = drinksJson as DrinksData;
-const hoursData = hoursJson as HoursData;
-const eventsData = eventsJson as EventsData;
-const faqData = faqJson as FAQData;
-const loyaltyData = loyaltyJson as LoyaltyData;
+// Cast imported JSON to their types with safety
+const menuData = menuJson as unknown as MenuData;
+const drinksData = drinksJson as unknown as DrinksData;
+const hoursData = hoursJson as unknown as HoursData;
+const eventsData = eventsJson as unknown as EventsData;
+const faqData = faqJson as unknown as FAQData;
+const loyaltyData = loyaltyJson as unknown as LoyaltyData;
 
 /**
  * Format menu data for GPT context
@@ -25,7 +25,9 @@ export function formatMenuData(): string {
   // Pizza section
   formatted += "**PIZZAS:**\n";
   menuData.categories.pizza.items.forEach((pizza: MenuItem) => {
-    formatted += `• ${pizza.name} - €${pizza.price.toFixed(2)}${pizza.dietary ? ` (${pizza.dietary.join(', ')})` : ''}\n`;
+    if (pizza.price) {
+      formatted += `• ${pizza.name} - €${pizza.price.toFixed(2)}${pizza.dietary ? ` (${pizza.dietary.join(', ')})` : ''}\n`;
+    }
   });
 
   // Draft beers section
@@ -39,7 +41,9 @@ export function formatMenuData(): string {
   // Cocktails section
   formatted += "\n**COCKTAILS:**\n";
   menuData.categories.cocktails.items.forEach((cocktail: MenuItem) => {
-    formatted += `• ${cocktail.name} - €${cocktail.price.toFixed(2)}${cocktail.category === 'non-alcoholic' ? ' (alcohol-free)' : ''}\n`;
+    if (cocktail.price) {
+      formatted += `• ${cocktail.name} - €${cocktail.price.toFixed(2)}${cocktail.category === 'non-alcoholic' ? ' (alcohol-free)' : ''}\n`;
+    }
   });
 
   // Long drinks section
@@ -56,7 +60,9 @@ export function formatMenuData(): string {
   // Snacks section
   formatted += "\n**SNACKS:**\n";
   menuData.categories.snacks.items.forEach((snack: MenuItem) => {
-    formatted += `• ${snack.name} - €${snack.price.toFixed(2)}${snack.description ? ` (${snack.description})` : ''}\n`;
+    if (snack.price) {
+      formatted += `• ${snack.name} - €${snack.price.toFixed(2)}${snack.description ? ` (${snack.description})` : ''}\n`;
+    }
   });
 
   formatted += "\n**NOTES:**\n";
@@ -137,7 +143,10 @@ export function formatDrinksData(): string {
  * Format opening hours for GPT context
  */
 export function formatHoursData(): string {
-  const { regular_hours, holiday_hours, notes } = hoursData;
+  // Handle both old and new data structures
+  const regularHours = (hoursData as any).regular_hours || (hoursData as any).opening_hours;
+  const holidayHours = (hoursData as any).holiday_hours || {};
+  const notes = (hoursData as any).notes || (hoursData as any).special_notes || [];
   
   let formatted = "**OPENING HOURS:**\n\n";
   
@@ -145,17 +154,23 @@ export function formatHoursData(): string {
   const dayNames = ['Monday', 'Tuesday', 'Wednesday', 'Thursday', 'Friday', 'Saturday', 'Sunday'];
   
   days.forEach((day, index) => {
-    const hours = regular_hours[day];
+    const hours = regularHours[day];
+    if (!hours) return;
+    
     if (hours.status === 'closed') {
       formatted += `${dayNames[index]}: Closed\n`;
     } else if (hours.hours) {
+      // New structure
       formatted += `${dayNames[index]}: ${hours.hours.from} - ${hours.hours.to}\n`;
+    } else if (hours.open && hours.close) {
+      // Old structure
+      formatted += `${dayNames[index]}: ${hours.open} - ${hours.close}\n`;
     }
   });
   
-  if (Object.keys(holiday_hours).length > 0) {
+  if (Object.keys(holidayHours).length > 0) {
     formatted += `\n**HOLIDAY HOURS:**\n`;
-    Object.entries(holiday_hours).forEach(([holiday, info]) => {
+    Object.entries(holidayHours).forEach(([holiday, info]: [string, any]) => {
       formatted += `${info.date}: ${info.hours.from} - ${info.hours.to}\n`;
     });
   }
@@ -299,11 +314,18 @@ export function getCurrentTimeContext(): string {
   const dayName = days[berlinTime.getDay()];
   const currentTime = berlinTime.toTimeString().slice(0, 5);
   
-  const { regular_hours } = hoursData;
-  const todayHours = regular_hours[dayName as keyof typeof regular_hours];
+  // Handle both old and new data structures
+  const regularHours = (hoursData as any).regular_hours || (hoursData as any).opening_hours;
+  const todayHours = regularHours[dayName];
+  
+  if (!todayHours) {
+    return `**CURRENT CONTEXT:**\nDay: ${dayName.charAt(0).toUpperCase() + dayName.slice(1)}\nTime: ${currentTime} (Berlin time)\nToday's hours: Check at venue`;
+  }
   
   let hoursString = todayHours.status === 'closed' ? 'Closed today' : 
-    todayHours.hours ? `${todayHours.hours.from}-${todayHours.hours.to}` : 'Check at venue';
+    todayHours.hours ? `${todayHours.hours.from}-${todayHours.hours.to}` : 
+    todayHours.open && todayHours.close ? `${todayHours.open}-${todayHours.close}` :
+    'Check at venue';
   
   return `**CURRENT CONTEXT:**\nDay: ${dayName.charAt(0).toUpperCase() + dayName.slice(1)}\nTime: ${currentTime} (Berlin time)\nToday's hours: ${hoursString}`;
 }
