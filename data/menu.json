@@ -1,0 +1,78 @@
+{
+  "food": {
+    "nachos": {
+      "name": "Castle Nachos",
+      "description": "Loaded tortilla chips with cheese, jalapeños, sour cream, and guacamole",
+      "price": "€12.50",
+      "category": "snacks"
+    },
+    "pizza_margherita": {
+      "name": "Margherita Pizza", 
+      "description": "Classic tomato base with mozzarella and fresh basil",
+      "price": "€14.00",
+      "category": "pizza"
+    },
+    "pizza_pepperoni": {
+      "name": "Pepperoni Pizza",
+      "description": "Tomato base with mozzarella and spicy pepperoni",
+      "price": "€16.00", 
+      "category": "pizza"
+    },
+    "wings": {
+      "name": "Buffalo Wings",
+      "description": "8 pieces served with blue cheese dip and celery sticks",
+      "price": "€11.00",
+      "category": "snacks"
+    },
+    "burger": {
+      "name": "Castle Burger",
+      "description": "Beef patty with lettuce, tomato, onion, and special sauce. Served with fries",
+      "price": "€15.50",
+      "category": "mains"
+    }
+  },
+  "cocktails": {
+    "mojito": {
+      "name": "Classic Mojito",
+      "description": "White rum, lime juice, sugar, soda water, fresh mint",
+      "price": "€9.50"
+    },
+    "old_fashioned": {
+      "name": "Old Fashioned", 
+      "description": "Bourbon whiskey, sugar cube, Angostura bitters, orange peel",
+      "price": "€11.00"
+    },
+    "margarita": {
+      "name": "House Margarita",
+      "description": "Tequila, lime juice, triple sec, salt rim",
+      "price": "€10.00"
+    },
+    "negroni": {
+      "name": "Negroni",
+      "description": "Gin, Campari, sweet vermouth, orange peel",
+      "price": "€10.50"
+    }
+  },
+  "spirits": {
+    "whiskey": {
+      "name": "Whiskey Selection",
+      "options": ["Jameson", "Jack Daniel's", "Glenfiddich 12", "Macallan 12"],
+      "price_range": "€6.00 - €15.00"
+    },
+    "gin": {
+      "name": "Gin Selection", 
+      "options": ["Tanqueray", "Hendrick's", "Bombay Sapphire", "Monkey 47"],
+      "price_range": "€7.00 - €12.00"
+    },
+    "vodka": {
+      "name": "Vodka Selection",
+      "options": ["Grey Goose", "Absolut", "Stolichnaya", "Beluga"],
+      "price_range": "€6.50 - €13.00"
+    }
+  },
+  "beer_info": {
+    "note": "Rotating tap selection - check live beer menu for current options",
+    "typical_styles": ["IPA", "Lager", "Wheat Beer", "Stout", "Pilsner"],
+    "price_range": "€4.50 - €7.50"
+  }
+} 

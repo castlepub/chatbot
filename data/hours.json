@@ -1,0 +1,51 @@
+{
+  "opening_hours": {
+    "monday": {
+      "open": "16:00",
+      "close": "01:00",
+      "status": "open"
+    },
+    "tuesday": {
+      "open": "16:00", 
+      "close": "01:00",
+      "status": "open"
+    },
+    "wednesday": {
+      "open": "16:00",
+      "close": "01:00", 
+      "status": "open"
+    },
+    "thursday": {
+      "open": "16:00",
+      "close": "02:00",
+      "status": "open"
+    },
+    "friday": {
+      "open": "16:00",
+      "close": "03:00",
+      "status": "open"
+    },
+    "saturday": {
+      "open": "14:00",
+      "close": "03:00",
+      "status": "open"
+    },
+    "sunday": {
+      "open": "14:00",
+      "close": "01:00", 
+      "status": "open"
+    }
+  },
+  "kitchen_hours": {
+    "daily": {
+      "open": "17:00",
+      "close": "23:00",
+      "note": "Kitchen closes 2 hours before bar closing"
+    }
+  },
+  "special_notes": [
+    "Happy Hour: Monday-Thursday 16:00-19:00",
+    "Weekend extended hours during major sports events",
+    "Kitchen may close earlier on quiet nights"
+  ]
+} 

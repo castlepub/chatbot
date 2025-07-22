@@ -1,0 +1,67 @@
+{
+  "program_name": "Castle Loyalty Program",
+  "point_system": {
+    "earning_rate": "1 point per €1 spent",
+    "bonus_earning": {
+      "happy_hour": "Double points during Happy Hour (Mon-Thu 16:00-19:00)",
+      "quiz_night": "50 bonus points for participating in Pub Quiz",
+      "birthday_month": "Triple points during your birthday month"
+    }
+  },
+  "rewards": {
+    "coffee": {
+      "points_required": 50,
+      "reward": "Free coffee or soft drink",
+      "description": "Any hot coffee or cold soft drink"
+    },
+    "beer": {
+      "points_required": 150,
+      "reward": "Free pint of beer",
+      "description": "Any beer from our rotating tap selection"
+    },
+    "appetizer": {
+      "points_required": 200,
+      "reward": "Free appetizer",
+      "description": "Choice of nachos, wings, or garlic bread"
+    },
+    "main_course": {
+      "points_required": 400,
+      "reward": "Free main course",
+      "description": "Any pizza or burger from our food menu"
+    },
+    "cocktail": {
+      "points_required": 300,
+      "reward": "Free house cocktail",
+      "description": "Any cocktail from our standard menu"
+    },
+    "vip_night": {
+      "points_required": 1000,
+      "reward": "VIP Experience Night",
+      "description": "Reserved table, welcome drink, and 20% off entire bill"
+    }
+  },
+  "membership_tiers": {
+    "regular": {
+      "min_points": 0,
+      "benefits": ["Standard point earning", "Birthday drink"]
+    },
+    "bronze": {
+      "min_points": 500,
+      "benefits": ["10% bonus points", "Priority quiz team signup", "Monthly special offers"]
+    },
+    "silver": {
+      "min_points": 1500,
+      "benefits": ["15% bonus points", "Free appetizer on birthday", "Early event notifications"]
+    },
+    "gold": {
+      "min_points": 3000,
+      "benefits": ["20% bonus points", "Free meal on birthday", "VIP event invitations", "Personalized recommendations"]
+    }
+  },
+  "api_integration": {
+    "status": "Coming Soon",
+    "provider": "Marsello",
+    "note": "Currently using fallback point system. Real-time integration with Marsello API coming soon for live point tracking and redemption.",
+    "future_features": ["Mobile app integration", "Real-time point balance", "Digital reward redemption", "Personalized offers"]
+  }
+} 

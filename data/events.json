@@ -1,0 +1,43 @@
+{
+  "recurring_events": {
+    "pub_quiz": {
+      "name": "Castle Pub Quiz",
+      "day": "Tuesday",
+      "time": "20:00",
+      "description": "Test your knowledge and win prizes! Teams of up to 6 people.",
+      "prize": "€50 bar tab for winning team"
+    },
+    "karaoke": {
+      "name": "Karaoke Night",
+      "day": "Thursday", 
+      "time": "21:00",
+      "description": "Sing your heart out! Open mic karaoke with full song library.",
+      "note": "Sign up starts at 20:30"
+    },
+    "live_sports": {
+      "name": "Live Sports Viewing",
+      "days": ["Friday", "Saturday", "Sunday"],
+      "description": "Watch major football matches, Formula 1, and other sports on our big screens",
+      "note": "Check our social media for specific match schedules"
+    }
+  },
+  "special_events": [
+    {
+      "name": "Oktoberfest Weekend",
+      "date": "2024-09-28 to 2024-09-29",
+      "description": "Traditional German beers, pretzels, and live music",
+      "special_menu": true
+    },
+    {
+      "name": "New Year's Eve Party",
+      "date": "2024-12-31",
+      "time": "20:00",
+      "description": "Ring in the new year with cocktails, music, and midnight toast",
+      "advance_booking": true
+    }
+  ],
+  "event_booking": {
+    "policy": "Most events are walk-in, but special events may require advance booking",
+    "contact": "Check our website or ask staff for details"
+  }
+} 

@@ -1,0 +1,56 @@
+{
+  "house_rules": {
+    "pets": {
+      "allowed": true,
+      "policy": "Well-behaved dogs welcome! Please keep them on a leash and clean up after them.",
+      "restrictions": "No pets allowed during busy weekend nights (Fri-Sat after 22:00)"
+    },
+    "smoking": {
+      "indoor": false,
+      "outdoor": true,
+      "policy": "Smoking is not permitted inside. Designated smoking area available in the beer garden."
+    },
+    "age_restrictions": {
+      "minimum_age": 18,
+      "id_required": true,
+      "policy": "Must be 18+ after 21:00. ID required for anyone who looks under 25."
+    },
+    "dress_code": {
+      "policy": "Smart casual. No tank tops or flip-flops.",
+      "note": "We reserve the right to refuse entry based on attire"
+    }
+  },
+  "facilities": {
+    "wifi": {
+      "available": true,
+      "network": "Castle_Guest",
+      "password": "Ask staff for current password"
+    },
+    "beer_garden": {
+      "available": true,
+      "capacity": "40 people",
+      "heating": "Yes, outdoor heaters available in winter",
+      "covered": "Partially covered seating area"
+    },
+    "accessibility": {
+      "wheelchair_access": true,
+      "accessible_toilets": true,
+      "assistance": "Staff happy to help - just ask!"
+    }
+  },
+  "payment": {
+    "methods": ["Cash", "Card", "Contactless", "Mobile payments"],
+    "minimum_card": "€10 minimum for card payments",
+    "tips": "Tips appreciated but not mandatory"
+  },
+  "reservations": {
+    "policy": "Walk-ins welcome! Reservations only for groups of 8+ or special events",
+    "large_groups": "Please call ahead for groups larger than 8 people",
+    "private_hire": "Private hire available - contact us for details"
+  },
+  "location_info": {
+    "address": "Invalidenstraße 129, 10115 Berlin, Germany",
+    "nearest_transport": "U6 Naturkundemuseum (5 min walk)",
+    "parking": "Limited street parking available"
+  }
+} 
