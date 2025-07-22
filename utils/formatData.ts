@@ -8,34 +8,43 @@ import loyaltyData from '../data/loyalty.json';
  * Format menu data for GPT context
  */
 export function formatMenuData(): string {
-  const { concept, food, beer, location } = menuData;
-  
   let formatted = "**MENU INFORMATION:**\n\n";
   
-  // Concept section
-  formatted += "**CONCEPT:**\n";
-  formatted += `• Type: ${concept.type}\n`;
-  formatted += `• Specialties: ${concept.specialties.join(', ')}\n`;
-  formatted += `• Service Style: ${concept.service_style}\n\n`;
-  
-  // Food section
-  formatted += "**FOOD:**\n";
-  formatted += `• Specialty: ${food.specialty}\n`;
-  formatted += `• Style: ${food.style}\n`;
-  formatted += `• ${food.note}\n\n`;
-  
-  // Beer section
-  formatted += "**BEER:**\n";
-  formatted += `• Number of Taps: ${beer.taps.count}\n`;
-  formatted += `• Beer Styles: ${beer.taps.styles.join(', ')}\n`;
-  formatted += `• ${beer.taps.note}\n\n`;
-  
-  // Location section
-  formatted += "**LOCATION:**\n";
-  formatted += `• Address: ${location.address}\n`;
-  formatted += `• Area: ${location.area}\n`;
-  formatted += `• Features: ${location.features.join(', ')}\n`;
-  
+  // Pizza section
+  formatted += "**PIZZAS:**\n";
+  menuData.pizza.items.forEach(pizza => {
+    formatted += `• ${pizza.name} - €${pizza.price.toFixed(2)}${pizza.dietary ? ` (${pizza.dietary})` : ''}\n`;
+  });
+
+  // Draft beers section
+  formatted += "\n**BEERS ON TAP:**\n";
+  menuData.draft_beers.items.forEach(beer => {
+    formatted += `• ${beer.name} - €${beer.prices["0.3l"].toFixed(2)} (0.3L) / €${beer.prices["0.5l"].toFixed(2)} (0.5L)\n`;
+  });
+
+  // Cocktails section
+  formatted += "\n**COCKTAILS:**\n";
+  menuData.cocktails.items.forEach(cocktail => {
+    formatted += `• ${cocktail.name} - €${cocktail.price.toFixed(2)}\n`;
+  });
+
+  // Long drinks section
+  formatted += "\n**LONG DRINKS:**\n";
+  formatted += `All long drinks €${menuData.long_drinks.price.toFixed(2)}:\n`;
+  menuData.long_drinks.items.slice(0, 5).forEach(drink => {
+    formatted += `• ${drink}\n`;
+  });
+  formatted += "...and more!\n";
+
+  // Snacks section
+  formatted += "\n**SNACKS:**\n";
+  menuData.snacks.items.forEach(snack => {
+    formatted += `• ${snack.name} - €${snack.price.toFixed(2)}\n`;
+  });
+
+  formatted += "\n**NOTE:** This is a selection of our menu. For our complete selection of beers, spirits, and other drinks, please ask at the bar or check Untappd.\n";
+  formatted += "All prices include VAT. Menu items and prices subject to change.\n";
+
   return formatted;
 }
 
@@ -107,32 +116,48 @@ export function formatEventsData(): string {
  * Format FAQ data for GPT context
  */
 export function formatFAQData(): string {
-  const { house_rules, facilities, payment, reservations, location_info } = faqData;
+  const { general_info, service_info, facilities } = faqData;
   
-  let formatted = "**POLICIES & INFORMATION:**\n\n";
+  let formatted = "**GENERAL INFORMATION:**\n\n";
   
-  formatted += "**HOUSE RULES:**\n";
-  formatted += `• Pets: ${house_rules.pets.allowed ? 'Welcome!' : 'Not allowed'} ${house_rules.pets.policy}\n`;
-  if (house_rules.pets.restrictions) formatted += `  Restriction: ${house_rules.pets.restrictions}\n`;
-  formatted += `• Smoking: ${house_rules.smoking.policy}\n`;
-  formatted += `• Age: ${house_rules.age_restrictions.policy}\n`;
-  formatted += `• Dress Code: ${house_rules.dress_code.policy}\n`;
+  // General info section
+  formatted += "**ABOUT US:**\n";
+  formatted += `• Type: ${general_info.concept.type}\n`;
+  formatted += `• Style: ${general_info.concept.style}\n`;
+  formatted += `• Specialties: ${general_info.concept.specialties.join(', ')}\n\n`;
   
-  formatted += "\n**FACILITIES:**\n";
-  formatted += `• WiFi: ${facilities.wifi.available ? `Available - Network: ${facilities.wifi.network}` : 'Not available'}\n`;
-  formatted += `• Beer Garden: ${facilities.beer_garden.available ? `Yes - ${facilities.beer_garden.capacity}, ${facilities.beer_garden.heating}` : 'Not available'}\n`;
-  formatted += `• Accessibility: ${facilities.accessibility.wheelchair_access ? 'Wheelchair accessible' : 'Not wheelchair accessible'}\n`;
+  // Service info section
+  formatted += "**SERVICE:**\n";
+  formatted += `• Ordering: ${service_info.ordering.process}\n`;
+  formatted += `• Payment: ${service_info.ordering.payment.join(', ')}\n`;
+  formatted += `• Reservations: ${service_info.reservations.policy}\n`;
+  formatted += `• Groups: ${service_info.reservations.groups}\n\n`;
   
-  formatted += "\n**PAYMENT & RESERVATIONS:**\n";
-  formatted += `• Payment methods: ${payment.methods.join(', ')}\n`;
-  formatted += `• Card minimum: ${payment.minimum_card}\n`;
-  formatted += `• Reservations: ${reservations.policy}\n`;
-  formatted += `• Large groups: ${reservations.large_groups}\n`;
+  // Facilities section
+  formatted += "**FACILITIES:**\n";
+  formatted += `• Indoor: ${facilities.seating.indoor}\n`;
+  formatted += `• Outdoor: ${facilities.seating.outdoor}\n`;
+  formatted += `• Features: ${Object.values(facilities.features).join(', ')}\n`;
   
-  formatted += "\n**LOCATION:**\n";
-  formatted += `• Address: ${location_info.address}\n`;
-  formatted += `• Transport: ${location_info.nearest_transport}\n`;
-  formatted += `• Parking: ${location_info.parking}\n`;
+  return formatted;
+}
+
+export function formatFacilitiesData(): string {
+  const { facilities } = faqData;
+  
+  let formatted = "**FACILITIES:**\n\n";
+  
+  // Seating section
+  formatted += "**SEATING:**\n";
+  formatted += `• Indoor: ${facilities.seating.indoor}\n`;
+  formatted += `• Outdoor: ${facilities.seating.outdoor}\n`;
+  formatted += `• Groups: ${facilities.seating.groups}\n\n`;
+  
+  // Features section
+  formatted += "**FEATURES:**\n";
+  Object.entries(facilities.features).forEach(([key, value]) => {
+    formatted += `• ${key}: ${value}\n`;
+  });
   
   return formatted;
 }
