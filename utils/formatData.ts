@@ -1,11 +1,20 @@
 import type { HoursData, MenuData, DrinksData, FAQData, EventsData, LoyaltyData, MenuItem, DrinkItem, DrinkCategory, EventFeature } from '../types';
 
-const menuData = require('../data/menu.json') as MenuData;
-const drinksData = require('../data/drinks.json') as DrinksData;
-const hoursData = require('../data/hours.json') as HoursData;
-const eventsData = require('../data/events.json') as EventsData;
-const faqData = require('../data/faq.json') as FAQData;
-const loyaltyData = require('../data/loyalty.json') as LoyaltyData;
+// Import JSON files
+import menuJson from '../data/menu.json';
+import drinksJson from '../data/drinks.json';
+import hoursJson from '../data/hours.json';
+import eventsJson from '../data/events.json';
+import faqJson from '../data/faq.json';
+import loyaltyJson from '../data/loyalty.json';
+
+// Cast imported JSON to their types
+const menuData = menuJson as MenuData;
+const drinksData = drinksJson as DrinksData;
+const hoursData = hoursJson as HoursData;
+const eventsData = eventsJson as EventsData;
+const faqData = faqJson as FAQData;
+const loyaltyData = loyaltyJson as LoyaltyData;
 
 /**
  * Format menu data for GPT context

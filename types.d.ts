@@ -23,13 +23,14 @@ export interface HoursData {
 }
 
 // Menu data types
-export interface MenuItem {
+interface MenuItem {
   name: string;
-  price: number;
+  price?: number;  // Make price optional since some items use sizes
   description?: string;
   dietary?: string[];
   category?: string;
   is_signature?: boolean;
+  is_house_brew?: boolean;
   sizes?: {
     small: { volume: string; price: number };
     large: { volume: string; price: number };
