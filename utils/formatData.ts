@@ -210,12 +210,21 @@ export function getCurrentTimeContext(): string {
   const { opening_hours } = hoursData;
   const todayHours = opening_hours[dayName as keyof typeof opening_hours];
   
-  let status = todayHours.status;
-  let hoursString = todayHours.status === 'closed' ? 'Closed' : 
-                    ('open' in todayHours && 'close' in todayHours) ? 
-                    `${todayHours.open} - ${todayHours.close}` : 'Check at venue';
+  if (todayHours.status === 'closed') {
+    return `**CURRENT CONTEXT:**\nDay: ${dayName.charAt(0).toUpperCase() + dayName.slice(1)}\nTime: ${currentTime} (Berlin time)\nToday's hours: Closed today`;
+  }
   
-  return `**CURRENT CONTEXT:**\nDay: ${dayName.charAt(0).toUpperCase() + dayName.slice(1)}\nTime: ${currentTime} (Berlin time)\nStatus: Currently ${status}\nToday's hours: ${hoursString}`;
+  // Now we know it's open and has the full structure
+  const openHours = todayHours as {
+    open: string;
+    close: string;
+    status: string;
+    kitchen: { open: string; close: string; };
+  };
+  
+  const hoursString = `${openHours.open}-${openHours.close} (Kitchen: ${openHours.kitchen.open}-${openHours.kitchen.close})`;
+  
+  return `**CURRENT CONTEXT:**\nDay: ${dayName.charAt(0).toUpperCase() + dayName.slice(1)}\nTime: ${currentTime} (Berlin time)\nToday's hours: ${hoursString}`;
 }
 
 /**
