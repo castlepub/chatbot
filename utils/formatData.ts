@@ -1,9 +1,11 @@
-import menuData from '../data/menu.json';
-import drinksData from '../data/drinks.json';
-import hoursData from '../data/hours.json';
-import eventsData from '../data/events.json';
-import faqData from '../data/faq.json';
-import loyaltyData from '../data/loyalty.json';
+import type { HoursData, MenuData, DrinksData, FAQData, EventsData, LoyaltyData, MenuItem, DrinkItem, DrinkCategory, EventFeature } from '../types';
+
+const menuData = require('../data/menu.json') as MenuData;
+const drinksData = require('../data/drinks.json') as DrinksData;
+const hoursData = require('../data/hours.json') as HoursData;
+const eventsData = require('../data/events.json') as EventsData;
+const faqData = require('../data/faq.json') as FAQData;
+const loyaltyData = require('../data/loyalty.json') as LoyaltyData;
 
 /**
  * Format menu data for GPT context
@@ -13,38 +15,43 @@ export function formatMenuData(): string {
   
   // Pizza section
   formatted += "**PIZZAS:**\n";
-  menuData.categories.pizza.items.forEach(pizza => {
+  menuData.categories.pizza.items.forEach((pizza: MenuItem) => {
     formatted += `• ${pizza.name} - €${pizza.price.toFixed(2)}${pizza.dietary ? ` (${pizza.dietary.join(', ')})` : ''}\n`;
   });
 
   // Draft beers section
   formatted += "\n**BEERS ON TAP:**\n";
-  menuData.categories.draft_beers.items.forEach(beer => {
-    formatted += `• ${beer.name} - €${beer.sizes.small.price.toFixed(2)} (${beer.sizes.small.volume}) / €${beer.sizes.large.price.toFixed(2)} (${beer.sizes.large.volume})\n`;
+  menuData.categories.draft_beers.items.forEach((beer: MenuItem) => {
+    if (beer.sizes) {
+      formatted += `• ${beer.name} - €${beer.sizes.small.price.toFixed(2)} (${beer.sizes.small.volume}) / €${beer.sizes.large.price.toFixed(2)} (${beer.sizes.large.volume})\n`;
+    }
   });
 
   // Cocktails section
   formatted += "\n**COCKTAILS:**\n";
-  menuData.categories.cocktails.items.forEach(cocktail => {
+  menuData.categories.cocktails.items.forEach((cocktail: MenuItem) => {
     formatted += `• ${cocktail.name} - €${cocktail.price.toFixed(2)}${cocktail.category === 'non-alcoholic' ? ' (alcohol-free)' : ''}\n`;
   });
 
   // Long drinks section
   formatted += "\n**LONG DRINKS:**\n";
-  formatted += `All long drinks €${menuData.categories.long_drinks.base_price.toFixed(2)}:\n`;
-  menuData.categories.long_drinks.items.slice(0, 5).forEach(drink => {
+  const longDrinks = menuData.categories.long_drinks;
+  if (longDrinks.base_price) {
+    formatted += `All long drinks €${longDrinks.base_price.toFixed(2)}:\n`;
+  }
+  longDrinks.items.slice(0, 5).forEach((drink: MenuItem) => {
     formatted += `• ${drink.name}\n`;
   });
   formatted += "...and more!\n";
 
   // Snacks section
   formatted += "\n**SNACKS:**\n";
-  menuData.categories.snacks.items.forEach(snack => {
+  menuData.categories.snacks.items.forEach((snack: MenuItem) => {
     formatted += `• ${snack.name} - €${snack.price.toFixed(2)}${snack.description ? ` (${snack.description})` : ''}\n`;
   });
 
   formatted += "\n**NOTES:**\n";
-  menuData.menu_notes.forEach(note => {
+  menuData.menu_notes.forEach((note: string) => {
     formatted += `• ${note}\n`;
   });
 
@@ -59,55 +66,62 @@ export function formatDrinksData(): string {
 
   // Whiskey section
   formatted += "**WHISKEY:**\n";
-  Object.entries(drinksData.categories.whiskey).forEach(([type, data]) => {
+  const whiskey = drinksData.categories.whiskey as { [key: string]: DrinkCategory };
+  Object.entries(whiskey).forEach(([type, data]) => {
     formatted += `\n${data.name}:\n`;
-    data.items.forEach(whiskey => {
-      formatted += `• ${whiskey.name} - €${whiskey.sizes.small.price.toFixed(2)} (${whiskey.sizes.small.volume}) / €${whiskey.sizes.large.price.toFixed(2)} (${whiskey.sizes.large.volume})\n`;
+    data.items.forEach((whiskey: DrinkItem) => {
+      if (whiskey.sizes) {
+        formatted += `• ${whiskey.name} - €${whiskey.sizes.small.price.toFixed(2)} (${whiskey.sizes.small.volume}) / €${whiskey.sizes.large.price.toFixed(2)} (${whiskey.sizes.large.volume})\n`;
+      }
     });
   });
 
   // Bottled beers section
   formatted += "\n**BOTTLED BEERS:**\n";
-  drinksData.categories.bottled_beers.items.forEach(beer => {
-    formatted += `• ${beer.name} - €${beer.price.toFixed(2)}${beer.is_local ? ' (local)' : ''}\n`;
+  const bottledBeers = drinksData.categories.bottled_beers as DrinkCategory;
+  bottledBeers.items.forEach((beer: DrinkItem) => {
+    if (beer.price) {
+      formatted += `• ${beer.name} - €${beer.price.toFixed(2)}${beer.is_local ? ' (local)' : ''}\n`;
+    }
   });
 
   // Ciders section
   formatted += "\n**CIDERS:**\n";
-  drinksData.categories.ciders.items.forEach(cider => {
-    formatted += `• ${cider.name} (${cider.size}) - €${cider.price.toFixed(2)}\n`;
-    if (cider.variants.length > 0) {
-      formatted += `  Flavors: ${cider.variants.join(', ')}\n`;
+  const ciders = drinksData.categories.ciders as DrinkCategory;
+  ciders.items.forEach((cider: DrinkItem) => {
+    if (cider.price && cider.size) {
+      formatted += `• ${cider.name} (${cider.size}) - €${cider.price.toFixed(2)}\n`;
+      if (cider.variants && cider.variants.length > 0) {
+        formatted += `  Flavors: ${cider.variants.join(', ')}\n`;
+      }
     }
   });
 
   // Hot drinks section
   formatted += "\n**HOT DRINKS:**\n";
-  drinksData.categories.hot_drinks.items.forEach(drink => {
-    formatted += `• ${drink.name} - €${drink.price.toFixed(2)}\n`;
+  const hotDrinks = drinksData.categories.hot_drinks as DrinkCategory;
+  hotDrinks.items.forEach((drink: DrinkItem) => {
+    if (drink.price) {
+      formatted += `• ${drink.name} - €${drink.price.toFixed(2)}\n`;
+    }
   });
-  if (drinksData.categories.hot_drinks.extras) {
+  if (hotDrinks.extras) {
     formatted += "\nExtras:\n";
-    drinksData.categories.hot_drinks.extras.forEach(extra => {
+    hotDrinks.extras.forEach(extra => {
       formatted += `• ${extra.name} - €${extra.price.toFixed(2)}\n`;
     });
   }
 
   // Soft drinks section
   formatted += "\n**SOFT DRINKS:**\n";
-  drinksData.categories.soft_drinks.items.forEach(drink => {
-    formatted += `• ${drink.name}${drink.size ? ` (${drink.size})` : ''} - €${drink.price.toFixed(2)}\n`;
+  const softDrinks = drinksData.categories.soft_drinks as DrinkCategory;
+  softDrinks.items.forEach((drink: DrinkItem) => {
+    if (drink.price) {
+      formatted += `• ${drink.name}${drink.size ? ` (${drink.size})` : ''} - €${drink.price.toFixed(2)}\n`;
+    }
   });
 
   return formatted;
-}
-
-interface RegularHours {
-  status: string;
-  hours?: {
-    from: string;
-    to: string;
-  };
 }
 
 /**
@@ -122,7 +136,7 @@ export function formatHoursData(): string {
   const dayNames = ['Monday', 'Tuesday', 'Wednesday', 'Thursday', 'Friday', 'Saturday', 'Sunday'];
   
   days.forEach((day, index) => {
-    const hours = regular_hours[day as keyof typeof regular_hours] as RegularHours;
+    const hours = regular_hours[day];
     if (hours.status === 'closed') {
       formatted += `${dayNames[index]}: Closed\n`;
     } else if (hours.hours) {
@@ -154,22 +168,22 @@ export function formatEventsData(): string {
   let formatted = "**VENUE FEATURES & INFORMATION:**\n\n";
   
   formatted += "**REGULAR FEATURES:**\n";
-  Object.entries(regular_features).forEach(([key, feature]) => {
+  Object.entries(regular_features).forEach(([key, feature]: [string, EventFeature]) => {
     formatted += `• ${feature.name}\n`;
     formatted += `  ${feature.description}\n`;
-    if ('availability' in feature) formatted += `  Availability: ${feature.availability}\n`;
-    if ('seating' in feature) formatted += `  Seating: ${feature.seating}\n`;
-    if ('note' in feature) formatted += `  Note: ${feature.note}\n`;
+    if (feature.availability) formatted += `  Availability: ${feature.availability}\n`;
+    if (feature.seating) formatted += `  Seating: ${feature.seating}\n`;
+    if (feature.note) formatted += `  Note: ${feature.note}\n`;
     formatted += "\n";
   });
   
   formatted += "**SPECIAL FEATURES:**\n";
-  Object.entries(special_features).forEach(([key, feature]) => {
+  Object.entries(special_features).forEach(([key, feature]: [string, EventFeature]) => {
     formatted += `• ${feature.name}\n`;
     formatted += `  ${feature.description}\n`;
-    if ('rotation' in feature) formatted += `  ${feature.rotation}\n`;
-    if ('info' in feature) formatted += `  ${feature.info}\n`;
-    if ('style' in feature) formatted += `  Style: ${feature.style}\n`;
+    if (feature.rotation) formatted += `  ${feature.rotation}\n`;
+    if (feature.info) formatted += `  ${feature.info}\n`;
+    if (feature.style) formatted += `  Style: ${feature.style}\n`;
     formatted += "\n";
   });
   
@@ -277,7 +291,7 @@ export function getCurrentTimeContext(): string {
   const currentTime = berlinTime.toTimeString().slice(0, 5);
   
   const { regular_hours } = hoursData;
-  const todayHours = regular_hours[dayName as keyof typeof regular_hours] as RegularHours;
+  const todayHours = regular_hours[dayName as keyof typeof regular_hours];
   
   let hoursString = todayHours.status === 'closed' ? 'Closed today' : 
     todayHours.hours ? `${todayHours.hours.from}-${todayHours.hours.to}` : 'Check at venue';
