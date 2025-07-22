@@ -1,552 +1,355 @@
 {
-  "pizza": {
-    "category_name": "Neapolitan Pizza",
-    "description": "Fresh, authentic Neapolitan pizzas made to order",
-    "items": [
-      {
-        "name": "The Tower",
-        "price": 13.50,
-        "highlight": true
-      },
-      {
-        "name": "The Royal Salami",
-        "price": 11.50
-      },
-      {
-        "name": "Our Queen Margherita",
-        "price": 9.50,
-        "description": "Classic Neapolitan margherita"
-      },
-      {
-        "name": "Lady V",
-        "price": 11.50,
-        "dietary": "vegan"
-      },
-      {
-        "name": "The Jester Salami",
-        "price": 11.50
-      },
-      {
-        "name": "The Dark Knight",
-        "price": 11.50
-      },
-      {
-        "name": "The Fun Ghi",
-        "price": 11.50
-      },
-      {
-        "name": "Sir Plantsalot",
-        "price": 11.50
-      }
-    ]
-  },
-  "draft_beers": {
-    "category_name": "Beers on Tap",
-    "description": "Our selection of draft beers",
-    "items": [
-      {
-        "name": "Hopscor – Castle Brew Pils",
-        "prices": {
-          "0.3l": 3.50,
-          "0.5l": 4.50
-        },
-        "highlight": true
-      },
-      {
-        "name": "Weihenstephan Hefeweizen",
-        "prices": {
-          "0.3l": 4.00,
-          "0.5l": 5.50
-        }
-      },
-      {
-        "name": "Hopscor Pale Ale",
-        "prices": {
-          "0.3l": 4.00,
-          "0.5l": 5.50
-        }
-      },
-      {
-        "name": "Stowford Cider",
-        "prices": {
-          "0.3l": 4.00,
-          "0.5l": 5.50
-        }
-      },
-      {
-        "name": "Guinness",
-        "prices": {
-          "0.3l": 5.50,
-          "0.5l": 7.00
-        }
-      }
-    ]
-  },
-  "bottled_beers": {
-    "category_name": "Bottled Beers & Ciders",
-    "items": [
-      {
-        "name": "Berliner Berg Lager/Pale Ale",
-        "size": "0.33l",
-        "price": 4.50
-      },
-      {
-        "name": "BRLO Helles",
-        "size": "0.33l",
-        "price": 4.50
-      },
-      {
-        "name": "BRLO Porter",
-        "size": "0.33l",
-        "price": 5.50
-      },
-      {
-        "name": "Corona",
-        "price": 4.50
-      },
-      {
-        "name": "Leffe",
-        "price": 4.50
-      },
-      {
-        "name": "Weihenstephan Kristallweizen",
-        "price": 5.50
-      },
-      {
-        "name": "Pilsner Urquell",
-        "size": "0.33l",
-        "price": 4.50
-      },
-      {
-        "name": "Estrella Damm",
-        "price": 4.50
-      }
-    ]
-  },
-  "ciders": {
-    "category_name": "Premium Ciders",
-    "items": [
-      {
-        "name": "Bulmers",
-        "variants": ["Red Berry", "Juicy Pear", "Original"],
-        "size": "568ml",
-        "price": 7.00
-      },
-      {
-        "name": "BRLO Cider",
-        "variants": ["Apple", "Rose", "Wild Berries"],
-        "size": "0.33l",
-        "price": 4.50
-      },
-      {
-        "name": "Magners",
-        "variants": ["Berry", "Pear", "Original"],
-        "size": "568ml",
-        "price": 7.00
-      },
-      {
-        "name": "Somersby",
-        "variants": ["Mango & Lime", "Apple", "Blackberry"],
-        "size": "0.33l",
-        "price": 4.50
-      }
-    ]
-  },
-  "cocktails": {
-    "category_name": "Cocktails",
-    "items": [
-      {
-        "name": "Espresso Martini",
-        "price": 10.00
-      },
-      {
-        "name": "Berry Mojito",
-        "price": 10.00
-      },
-      {
-        "name": "Negroni",
-        "price": 11.00
-      },
-      {
-        "name": "Shirley Temple",
-        "price": 6.00,
-        "dietary": "alcohol-free"
-      }
-    ]
-  },
-  "long_drinks": {
-    "category_name": "Long Drinks",
-    "price": 9.00,
-    "items": [
-      "Moscow Mule",
-      "Aperol Spritz",
-      "Lillet Spritz",
-      "Limoncello Spritz",
-      "Peach Vodka Lemonade",
-      "Jack Apple Lemonade",
-      "Tropical Vodka Lemonade",
-      "Dark & Stormy",
-      "Whiskey + Ginger Ale or Coke",
-      "Cuba Libre",
-      "Tequila Sunrise",
-      "Sarti Spritz",
-      "Wildberry Lillet",
-      "Berlin Mule"
-    ]
-  },
-  "gin_tonic": {
-    "category_name": "Gin & Tonic",
-    "items": [
-      {
-        "name": "Monkey 47",
-        "price": 12.50,
-        "premium": true
-      },
-      {
-        "name": "Gin Sul",
-        "price": 12.50,
-        "premium": true
-      },
-      {
-        "name": "Gin Mare",
-        "price": 11.00
-      },
-      {
-        "name": "Botanist",
-        "price": 10.00
-      },
-      {
-        "name": "Sipsmith",
-        "price": 10.00
-      },
-      {
-        "name": "Hendrick's",
-        "price": 9.00
-      },
-      {
-        "name": "Roku",
-        "price": 9.00
-      },
-      {
-        "name": "Citadelle",
-        "price": 8.50
-      },
-      {
-        "name": "Hayman's Sloe",
-        "price": 8.50
-      },
-      {
-        "name": "Bombay",
-        "price": 7.50
-      },
-      {
-        "name": "Bulldog",
-        "price": 7.50
-      },
-      {
-        "name": "Mampe",
-        "price": 7.50
-      },
-      {
-        "name": "Larios Rose",
-        "price": 7.50
-      },
-      {
-        "name": "Tanqueray",
-        "price": 7.50
-      }
-    ],
-    "alcohol_free": [
-      {
-        "name": "Tanqueray 0.0%",
-        "price": 7.50
-      },
-      {
-        "name": "Mampe Null Null",
-        "price": 7.50
-      }
-    ]
-  },
-  "whiskey": {
-    "scotch": {
-      "category_name": "Scotch Whisky",
+  "categories": {
+    "draft_beers": {
+      "name": "Beers on Tap",
+      "description": "Our rotating selection of draft beers",
+      "note": "Check Untappd for real-time tap list updates",
       "items": [
         {
-          "name": "Glenfiddich 12yr",
-          "prices": {
-            "2cl": 5.00,
-            "4cl": 9.00
+          "name": "Hopscor – Castle Brew Pils",
+          "sizes": {
+            "small": {"volume": "0.3L", "price": 3.50},
+            "large": {"volume": "0.5L", "price": 4.50}
+          },
+          "is_house_brew": true
+        },
+        {
+          "name": "Weihenstephan Hefeweizen",
+          "sizes": {
+            "small": {"volume": "0.3L", "price": 4.00},
+            "large": {"volume": "0.5L", "price": 5.50}
           }
         },
         {
-          "name": "Glenkinchie 12yr",
-          "prices": {
-            "2cl": 5.00,
-            "4cl": 9.00
+          "name": "Hopscor Pale Ale",
+          "sizes": {
+            "small": {"volume": "0.3L", "price": 4.00},
+            "large": {"volume": "0.5L", "price": 5.50}
           }
         },
         {
-          "name": "Glenmorangie 10yr",
-          "prices": {
-            "2cl": 5.00,
-            "4cl": 9.00
+          "name": "Stowford Cider",
+          "sizes": {
+            "small": {"volume": "0.3L", "price": 4.00},
+            "large": {"volume": "0.5L", "price": 5.50}
           }
         },
         {
-          "name": "Laphroaig 10yr",
-          "prices": {
-            "2cl": 5.00,
-            "4cl": 9.00
-          }
-        },
-        {
-          "name": "Talisker 10yr",
-          "prices": {
-            "2cl": 4.50,
-            "4cl": 8.00
+          "name": "Guinness",
+          "sizes": {
+            "small": {"volume": "0.3L", "price": 5.50},
+            "large": {"volume": "0.5L", "price": 7.00}
           }
         }
       ]
     },
-    "irish": {
-      "category_name": "Irish Whiskey",
+    "pizza": {
+      "name": "Neapolitan Pizza",
+      "description": "Fresh, authentic Neapolitan pizzas made to order",
       "items": [
+        {
+          "name": "The Tower",
+          "price": 13.50,
+          "description": "Our signature pizza",
+          "is_signature": true
+        },
+        {
+          "name": "The Royal Salami",
+          "price": 11.50
+        },
+        {
+          "name": "Our Queen Margherita",
+          "price": 9.50,
+          "description": "Classic Neapolitan margherita"
+        },
+        {
+          "name": "Lady V",
+          "price": 11.50,
+          "dietary": ["vegan"]
+        },
+        {
+          "name": "The Jester Salami",
+          "price": 11.50
+        },
+        {
+          "name": "The Dark Knight",
+          "price": 11.50
+        },
+        {
+          "name": "The Fun Ghi",
+          "price": 11.50
+        },
+        {
+          "name": "Sir Plantsalot",
+          "price": 11.50
+        }
+      ]
+    },
+    "cocktails": {
+      "name": "Cocktails",
+      "items": [
+        {
+          "name": "Espresso Martini",
+          "price": 10.00,
+          "category": "signature"
+        },
+        {
+          "name": "Berry Mojito",
+          "price": 10.00,
+          "category": "signature"
+        },
+        {
+          "name": "Negroni",
+          "price": 11.00,
+          "category": "classic"
+        },
+        {
+          "name": "Shirley Temple",
+          "price": 6.00,
+          "category": "non-alcoholic"
+        }
+      ]
+    },
+    "long_drinks": {
+      "name": "Long Drinks",
+      "description": "All long drinks €9.00",
+      "base_price": 9.00,
+      "items": [
+        {
+          "name": "Moscow Mule",
+          "ingredients": ["Vodka", "Ginger Beer", "Lime"]
+        },
+        {
+          "name": "Aperol Spritz",
+          "ingredients": ["Aperol", "Prosecco", "Soda"]
+        },
+        {
+          "name": "Lillet Spritz",
+          "ingredients": ["Lillet", "Prosecco", "Soda"]
+        },
+        {
+          "name": "Limoncello Spritz",
+          "ingredients": ["Limoncello", "Prosecco", "Soda"]
+        },
+        {
+          "name": "Peach Vodka Lemonade",
+          "ingredients": ["Peach Vodka", "Lemonade"]
+        },
+        {
+          "name": "Jack Apple Lemonade",
+          "ingredients": ["Jack Daniels Apple", "Lemonade"]
+        },
+        {
+          "name": "Tropical Vodka Lemonade",
+          "ingredients": ["Vodka", "Tropical Mix", "Lemonade"]
+        },
+        {
+          "name": "Dark & Stormy",
+          "ingredients": ["Dark Rum", "Ginger Beer", "Lime"]
+        },
+        {
+          "name": "Whiskey + Mixer",
+          "ingredients": ["Whiskey", "Choice of Ginger Ale or Coke"]
+        },
+        {
+          "name": "Cuba Libre",
+          "ingredients": ["Rum", "Coke", "Lime"]
+        },
+        {
+          "name": "Tequila Sunrise",
+          "ingredients": ["Tequila", "Orange Juice", "Grenadine"]
+        },
+        {
+          "name": "Sarti Spritz",
+          "ingredients": ["Sarti", "Prosecco", "Soda"]
+        },
+        {
+          "name": "Wildberry Lillet",
+          "ingredients": ["Lillet", "Wildberry", "Soda"]
+        },
+        {
+          "name": "Berlin Mule",
+          "ingredients": ["Vodka", "Ginger Beer", "Cucumber"]
+        }
+      ]
+    },
+    "gin_tonic": {
+      "name": "Gin & Tonic",
+      "description": "All served with premium Thomas Henry Tonic",
+      "items": [
+        {
+          "name": "Monkey 47",
+          "price": 12.50,
+          "category": "premium"
+        },
+        {
+          "name": "Gin Sul",
+          "price": 12.50,
+          "category": "premium"
+        },
+        {
+          "name": "Gin Mare",
+          "price": 11.00,
+          "category": "premium"
+        },
+        {
+          "name": "Botanist",
+          "price": 10.00
+        },
+        {
+          "name": "Sipsmith",
+          "price": 10.00
+        },
+        {
+          "name": "Hendrick's",
+          "price": 9.00
+        },
+        {
+          "name": "Roku",
+          "price": 9.00
+        },
+        {
+          "name": "Citadelle",
+          "price": 8.50
+        },
+        {
+          "name": "Hayman's Sloe",
+          "price": 8.50
+        },
+        {
+          "name": "Bombay",
+          "price": 7.50
+        },
+        {
+          "name": "Bulldog",
+          "price": 7.50
+        },
+        {
+          "name": "Mampe",
+          "price": 7.50,
+          "is_local": true
+        },
+        {
+          "name": "Larios Rose",
+          "price": 7.50
+        },
+        {
+          "name": "Tanqueray",
+          "price": 7.50
+        }
+      ],
+      "non_alcoholic": [
+        {
+          "name": "Tanqueray 0.0%",
+          "price": 7.50
+        },
+        {
+          "name": "Mampe Null Null",
+          "price": 7.50,
+          "is_local": true
+        }
+      ]
+    },
+    "shots": {
+      "name": "Shots",
+      "items": [
+        {
+          "name": "Tequila",
+          "price": 3.00
+        },
         {
           "name": "Jameson",
-          "prices": {
-            "2cl": 3.00,
-            "4cl": 5.00
-          }
+          "price": 3.00
         },
         {
-          "name": "Jameson Black Barrel",
-          "prices": {
-            "2cl": 3.50,
-            "4cl": 6.00
-          }
+          "name": "Baby Guinness",
+          "price": 3.00
+        },
+        {
+          "name": "Mexikaner",
+          "price": 2.50,
+          "is_house_special": true
+        },
+        {
+          "name": "Berliner Luft",
+          "price": 2.50,
+          "is_local": true
+        },
+        {
+          "name": "Jack Daniels",
+          "price": 2.50,
+          "variants": ["apple", "fire"]
+        },
+        {
+          "name": "Jäger",
+          "price": 3.00
+        },
+        {
+          "name": "Sambuca",
+          "price": 2.50
+        },
+        {
+          "name": "Vodka",
+          "price": 2.50
+        },
+        {
+          "name": "Limoncello",
+          "price": 3.00
+        },
+        {
+          "name": "Mampe Popcorn",
+          "price": 3.50,
+          "is_local": true
+        }
+      ],
+      "specials": [
+        {
+          "name": "Mexikaner Party Bottle",
+          "size": "250ml",
+          "price": 15.00,
+          "is_house_special": true
         }
       ]
     },
-    "bourbon": {
-      "category_name": "Bourbon",
+    "snacks": {
+      "name": "Snacks & Sides",
       "items": [
         {
-          "name": "Jack Daniels",
-          "prices": {
-            "2cl": 2.50,
-            "4cl": 4.50
-          }
+          "name": "Spicy Wedges",
+          "price": 6.50,
+          "category": "sides"
         },
         {
-          "name": "Bulleit",
-          "prices": {
-            "2cl": 3.00,
-            "4cl": 5.00
-          }
+          "name": "Sweet Potato Fries",
+          "price": 6.50,
+          "category": "sides"
+        },
+        {
+          "name": "Nachos Regular",
+          "price": 6.00,
+          "description": "With mozzarella and 1 dip",
+          "category": "sharing"
+        },
+        {
+          "name": "Nachos Vegan",
+          "price": 6.50,
+          "description": "With vegan mozzarella, salsa, and cheese dip",
+          "dietary": ["vegan"],
+          "category": "sharing"
+        },
+        {
+          "name": "Focaccia",
+          "price": 7.50,
+          "description": "With olive oil and rosemary",
+          "category": "bread"
         }
       ]
     }
   },
-  "shots": {
-    "category_name": "Shots",
-    "items": [
-      {
-        "name": "Tequila",
-        "price": 3.00
-      },
-      {
-        "name": "Jameson",
-        "price": 3.00
-      },
-      {
-        "name": "Baby Guinness",
-        "price": 3.00
-      },
-      {
-        "name": "Mexikaner",
-        "price": 2.50
-      },
-      {
-        "name": "Berliner Luft",
-        "price": 2.50
-      },
-      {
-        "name": "Jack Daniels",
-        "variants": ["apple", "fire"],
-        "price": 2.50
-      },
-      {
-        "name": "Jäger",
-        "price": 3.00
-      },
-      {
-        "name": "Sambuca",
-        "price": 2.50
-      },
-      {
-        "name": "Vodka",
-        "price": 2.50
-      },
-      {
-        "name": "Limoncello",
-        "price": 3.00
-      },
-      {
-        "name": "Mampe Popcorn",
-        "price": 3.50
-      },
-      {
-        "name": "Mexikaner Party Bottle",
-        "size": "250ml",
-        "price": 15.00
-      }
-    ]
-  },
-  "snacks": {
-    "category_name": "Snacks & Sides",
-    "items": [
-      {
-        "name": "Spicy Wedges",
-        "price": 6.50
-      },
-      {
-        "name": "Sweet Potato Fries",
-        "price": 6.50
-      },
-      {
-        "name": "Nachos Regular",
-        "description": "With mozzarella and 1 dip",
-        "price": 6.00
-      },
-      {
-        "name": "Nachos Vegan",
-        "description": "With vegan mozzarella, salsa, and cheese dip",
-        "price": 6.50,
-        "dietary": "vegan"
-      },
-      {
-        "name": "Focaccia",
-        "description": "With olive oil and rosemary",
-        "price": 7.50
-      }
-    ]
-  },
-  "hot_drinks": {
-    "category_name": "Coffee & Hot Drinks",
-    "items": [
-      {
-        "name": "Espresso Double",
-        "price": 2.50
-      },
-      {
-        "name": "Cappuccino",
-        "price": 3.50
-      },
-      {
-        "name": "Flat White",
-        "price": 3.50
-      },
-      {
-        "name": "Latte Macchiato",
-        "price": 4.00
-      },
-      {
-        "name": "Americano",
-        "price": 3.00
-      },
-      {
-        "name": "Moccha",
-        "price": 4.50
-      },
-      {
-        "name": "Hot Chocolate",
-        "price": 3.50
-      },
-      {
-        "name": "Chai Latte",
-        "price": 4.00
-      },
-      {
-        "name": "Dirty Chai",
-        "price": 4.50
-      },
-      {
-        "name": "Haselnut Macchiato",
-        "price": 4.50
-      },
-      {
-        "name": "Caramel Macchiato",
-        "price": 4.50
-      }
-    ],
-    "extras": [
-      {
-        "name": "Make it Iced",
-        "price": 0.50
-      }
-    ]
-  },
-  "soft_drinks": {
-    "category_name": "Soft Drinks",
-    "items": [
-      {
-        "name": "Coca Cola",
-        "size": "0.33l",
-        "price": 3.00
-      },
-      {
-        "name": "Coca Cola Zero",
-        "size": "0.33l",
-        "price": 3.00
-      },
-      {
-        "name": "Sprite",
-        "size": "0.33l",
-        "price": 3.00
-      },
-      {
-        "name": "Fanta",
-        "size": "0.33l",
-        "price": 3.00
-      },
-      {
-        "name": "Orange Juice",
-        "size": "0.2l",
-        "price": 3.00
-      },
-      {
-        "name": "Apple Juice",
-        "size": "0.2l",
-        "price": 3.00
-      },
-      {
-        "name": "Vio Still Water",
-        "size": "0.2l",
-        "price": 2.00
-      },
-      {
-        "name": "Vio Medium Water",
-        "size": "0.2l",
-        "price": 2.00
-      },
-      {
-        "name": "Club Mate",
-        "size": "0.33l",
-        "price": 3.00
-      },
-      {
-        "name": "Thomas Henry Tonic",
-        "price": 3.00
-      },
-      {
-        "name": "Elephant Bay Ice Tea",
-        "description": "Assorted flavors",
-        "price": 3.00
-      },
-      {
-        "name": "Iced Tea / Lemonade",
-        "price": 3.00
-      }
-    ]
-  }
+  "menu_notes": [
+    "All prices include VAT",
+    "Menu items and prices subject to change",
+    "Please inform staff of any allergies",
+    "Check Untappd for current beer selection"
+  ]
 } 
