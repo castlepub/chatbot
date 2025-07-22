@@ -137,7 +137,7 @@ Remember: You're the Castle Concierge - helpful but with attitude. Make guests f
 
     // Call OpenAI GPT-4
     const completion = await openai.chat.completions.create({
-      model: 'gpt-3.5-turbo-instruct',
+      model: 'gpt-3.5-turbo',
       messages: messages,
       max_tokens: 500,
       temperature: 0.8, // Slightly higher for personality
