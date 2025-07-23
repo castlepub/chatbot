@@ -44,7 +44,7 @@ export async function fetchBeerData(): Promise<BeerResponse> {
       return getFallbackBeerData();
     }
 
-    const response = await axios.get<BeerResponse>(beerApiUrl, {
+    const response = await axios.get(beerApiUrl, {
       timeout: 5000, // 5 second timeout
       headers: {
         'Accept': 'application/json',
@@ -52,11 +52,17 @@ export async function fetchBeerData(): Promise<BeerResponse> {
       }
     });
 
+    let data = response.data;
+    // If the API returns an array, wrap it in an object
+    if (Array.isArray(data)) {
+      data = { beers: data, last_updated: new Date().toISOString() };
+    }
+
     // Update cache
-    beerCache = response.data;
+    beerCache = data;
     cacheTimestamp = now;
     
-    return response.data;
+    return data;
     
   } catch (error) {
     console.error('Failed to fetch beer data from Railway API:', error);
