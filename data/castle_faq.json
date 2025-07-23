@@ -58,5 +58,9 @@
     {
         "question": "Do you have a lost and found service?",
         "answer": "If you believe you've lost something, the best option is to come by the bar and ask. This is faster than calling."
+    },
+    {
+        "question": "How do I make a reservation?",
+        "answer": "You can reserve a space for your group free of charge in the Middle Room (up to 50 people), Back Room (up to 30), Front Room (up to 30), or Beer Garden (up to 50, covered in winter). For private room rental, a fee applies for the Back and Middle Rooms. All food and drinks must be purchased at the bar. For full details and to book, visit https://www.castlepub.de/reservemitte."
     }
 ]
