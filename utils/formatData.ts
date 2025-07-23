@@ -5,7 +5,7 @@ import menuJson from '../data/menu.json';
 import drinksJson from '../data/drinks.json';
 import hoursJson from '../data/hours.json';
 import eventsJson from '../data/events.json';
-import faqJson from '../data/faq.json';
+import faqJson from '../data/castle_faq.json';
 import loyaltyJson from '../data/loyalty.json';
 
 // Cast imported JSON to their types with safety
@@ -13,7 +13,7 @@ const menuData = menuJson as unknown as MenuData;
 const drinksData = drinksJson as unknown as DrinksData;
 const hoursData = hoursJson as unknown as HoursData;
 const eventsData = eventsJson as unknown as EventsData;
-const faqData = faqJson as unknown as FAQData;
+const faqData = faqJson as unknown as Array<{ question: string; answer: string }>;
 const loyaltyData = loyaltyJson as unknown as LoyaltyData;
 
 /**
@@ -227,53 +227,16 @@ export function formatEventsData(): string {
 }
 
 /**
- * Format FAQ data for GPT context
+ * Format FAQ data for GPT context (castle_faq.json version)
  */
 export function formatFAQData(): string {
-  // Add safety checks for the data structure
-  const general_info = (faqData as any).general_info || {};
-  const service_info = (faqData as any).service_info || {};
-  const facilities = (faqData as any).facilities || {};
-  
-  let formatted = "**GENERAL INFORMATION:**\n\n";
-  
-  // General info section with safety checks
-  if (general_info.concept) {
-    formatted += "**ABOUT US:**\n";
-    formatted += `• Type: ${general_info.concept.type || 'Self-service pub'}\n`;
-    formatted += `• Style: ${general_info.concept.style || 'Modern craft beer pub'}\n`;
-    formatted += `• Specialties: ${general_info.concept.specialties ? general_info.concept.specialties.join(', ') : '20 rotating craft beers, Neapolitan pizza'}\n\n`;
-  } else {
-    // Fallback for missing concept data
-    formatted += "**ABOUT US:**\n";
-    formatted += `• Type: Self-service pub\n`;
-    formatted += `• Style: Modern craft beer pub with beer garden\n`;
-    formatted += `• Specialties: 20 rotating craft beers, Neapolitan pizza, Beer garden\n\n`;
+  if (!Array.isArray(faqData)) return 'No FAQ data available.';
+  let formatted = '**FREQUENTLY ASKED QUESTIONS:**\n\n';
+  for (const item of faqData) {
+    formatted += `**Q:** ${item.question}\n`;
+    formatted += `**A:** ${item.answer}\n\n`;
   }
-  
-  // Service info section with safety checks
-  if (service_info.ordering) {
-    formatted += "**SERVICE:**\n";
-    formatted += `• Ordering: ${service_info.ordering.process || 'Order at the bar'}\n`;
-    formatted += `• Payment: ${service_info.ordering.payment ? service_info.ordering.payment.join(', ') : 'Card, Cash'}\n`;
-    if (service_info.reservations) {
-      formatted += `• Reservations: ${service_info.reservations.policy || 'Walk-ins welcome'}\n`;
-    }
-    formatted += "\n";
-  }
-  
-  // Facilities section with safety checks
-  if (facilities.seating) {
-    formatted += "**FACILITIES:**\n";
-    formatted += `• Indoor seating: ${facilities.seating.indoor || 'Available'}\n`;
-    formatted += `• Outdoor seating: ${facilities.seating.outdoor || 'Beer garden available'}\n`;
-    if (facilities.accessibility) {
-      formatted += `• Accessibility: ${facilities.accessibility.wheelchair || 'Please ask staff'}\n`;
-    }
-    formatted += "\n";
-  }
-  
-  return formatted;
+  return formatted.trim();
 }
 
 export function formatFacilitiesData(): string {

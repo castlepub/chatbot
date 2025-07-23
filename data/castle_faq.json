@@ -1,0 +1,62 @@
+[
+    {
+        "question": "Can I reserve a party or a specific area at The Castle Pub?",
+        "answer": "Yes, you can reserve tables for your group free of charge, and we offer a suitable space for parties. However, please note that we do not reserve entire rooms or areas — only tables for the number of guests you have booked. Our regular business operations continue during events, and drinks must be purchased from the bar. Please also be aware that loud music and dancing are not possible, as we are primarily a bar, not a nightclub. Thank you for your understanding!"
+    },
+    {
+        "question": "I'm planning a celebration, may I bring my own cake?",
+        "answer": "Yes, you are welcome to bring your own cake for your celebration. Please ensure that you also bring plates, cutlery, and napkins with you."
+    },
+    {
+        "question": "I'm planning a big event and would like to pay the next day, is it possible?",
+        "answer": "Unfortunately, we do not offer the option to pay by invoice. We require that all food and drink orders go through our till system, and all bills must be settled on the same day. Once the bill is paid, we can provide a full tax receipt if needed."
+    },
+    {
+        "question": "Do you have a Pool Table?",
+        "answer": "Yes, we do have a pool table available. The cost for using the pool table is 5€ for an hour. We're not taking reservations for the pool table, even if you reserved the back room."
+    },
+    {
+        "question": "Can I make a reservation for the weekly quiz on Mondays?",
+        "answer": "Certainly, we accept quiz team reservations exclusively through our website, with bookings opening at 10 am on Monday mornings. This ensures fewer last-minute cancellations and a smoother quiz experience. Please note that quiz reservations are limited to the Middle and Back Rooms. Reserving a table elsewhere means you cannot join the quiz. The quiz starts at 7:30 pm and ends around 10 pm. It is conducted in both English and German."
+    },
+    {
+        "question": "Do you serve food?",
+        "answer": "Yes, we offer a selection of food including Neapolitan Pizza, nachos, wedges, and nuggets, with vegan options available."
+    },
+    {
+        "question": "Is there a minimum or maximum requirement for reservations?",
+        "answer": "We accept reservations for groups ranging from 2 to 50 people."
+    },
+    {
+        "question": "Reservation Policy",
+        "answer": "We’re happy to hold tables for your group, but if fewer guests arrive than originally booked, we reserve the right to seat other guests in any unused space after a reasonable amount of time. This helps us make the best use of our space and keep the good vibes flowing for everyone. Thanks for understanding!"
+    },
+    {
+        "question": "Can I reserve a table in the Beer Garden?",
+        "answer": "Yes, the Beer Garden Area can be reserved, walk-ins are always welcome."
+    },
+    {
+        "question": "Are dogs allowed in the bar?",
+        "answer": "Yes, we are dog-friendly and even provide dog snacks and a water bowl. Please feel free to ask about these."
+    },
+    {
+        "question": "Do you offer table service?",
+        "answer": "We operate as a self-service bar. Please order drinks and food at the bar or by scanning the QR code on your table."
+    },
+    {
+        "question": "Do you facilitate tabs?",
+        "answer": "Yes, our staff can set up a tab for your table. Let us know your budget, and we’ll notify you when it’s close. You can also limit drinks per person with vouchers. All tabs must be paid by the end of the night."
+    },
+    {
+        "question": "Do you accept card payments?",
+        "answer": "Yes, we accept EC cards, credit cards, American Express, Google Pay, Apple Pay, and more."
+    },
+    {
+        "question": "Do you have a quieter area for more intimate bookings or meetings?",
+        "answer": "Yes, during the day until 17:00, the bar area is quiet. After that it becomes very lively. Each section has its own speaker system, and our staff can adjust the volume for you."
+    },
+    {
+        "question": "Do you have a lost and found service?",
+        "answer": "If you believe you've lost something, the best option is to come by the bar and ask. This is faster than calling."
+    }
+]

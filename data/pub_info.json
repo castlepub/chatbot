@@ -1,57 +1,107 @@
 {
-  "name": "The Castle Pub",
-  "concept": {
-    "type": "Self-service pub",
-    "description": "Modern craft beer pub with authentic Neapolitan pizza",
-    "key_features": [
-      "20 rotating craft beers on tap",
-      "Neapolitan pizza",
-      "Beer garden",
-      "Self-service at bar"
-    ]
-  },
-  "location": {
-    "address": "Invalidenstraße 129",
-    "postal_code": "10115",
-    "city": "Berlin",
-    "area": "Mitte",
-    "transport": {
-      "nearest_station": "U6 Naturkundemuseum",
-      "walking_time": "5 minutes"
-    }
-  },
-  "contact": {
-    "phone": null,
-    "email": null,
-    "social": {
-      "instagram": null,
-      "facebook": null,
-      "untappd": null
-    }
-  },
-  "service": {
-    "ordering": "Order and pay at the bar",
-    "reservations": "No reservations needed",
-    "groups": "Welcome, contact for large groups",
-    "payment_methods": ["Cash", "Card", "Contactless"]
-  },
-  "facilities": {
-    "indoor": {
-      "available": true,
-      "features": ["Bar seating", "Table seating", "Standing tables"]
+    "name": "The Castle Pub",
+    "concept": {
+        "type": "Self-service pub",
+        "description": "Laid-back Berlin pub with 20 rotating taps, Neapolitan pizza, cocktails, and quiz nights. A place to stay for a while — whether you're grabbing a pint, enjoying nachos with friends, or hanging out until late.",
+        "key_features": [
+            "20 rotating craft beers on tap",
+            "Authentic Neapolitan pizza",
+            "Full cocktail menu",
+            "Weekly pub quiz in English & German",
+            "Beer garden",
+            "Pool table",
+            "Self-service at bar"
+        ]
     },
-    "outdoor": {
-      "available": true,
-      "type": "Beer garden",
-      "weather_dependent": true
+    "location": {
+        "address": "Invalidenstraße 129",
+        "postal_code": "10115",
+        "city": "Berlin",
+        "area": "Mitte",
+        "transport": {
+            "nearest_station": "U6 Naturkundemuseum",
+            "walking_time": "5 minutes"
+        }
     },
-    "accessibility": {
-      "wheelchair_access": true,
-      "notes": []
+    "contact": {
+        "phone": null,
+        "email": "info@thecastleberlin.de",
+        "social": {
+            "instagram": "https://www.instagram.com/thecastle.mitte/",
+            "facebook": "https://www.facebook.com/thecastleberlin",
+            "untappd": "https://untappd.com/v/the-castle/6317721"
+        }
+    },
+    "service": {
+        "ordering": "Order and pay at the bar or by scanning the QR code on your table",
+        "reservations": {
+            "policy": "Tables can be reserved for free in several areas for groups. Large groups and quiz night reservations must be made via the website.",
+            "link": "https://www.castlepub.de/reservemitte",
+            "areas": {
+                "Middle Room": "Up to 50 people",
+                "Back Room (Pool Room)": "Up to 30 people",
+                "Front Room": "Up to 30 people",
+                "Beer Garden": "Up to 50 people (covered in winter)"
+            },
+            "private_room_rentals": {
+                "Back Room": "€100/hour, max 30 people",
+                "Middle Room": "€150/hour, max 50 people"
+            },
+            "notes": [
+                "Reservations are always free — please support us by ordering at the bar.",
+                "No outside food or drinks allowed (birthday cakes are OK).",
+                "Front Room and Beer Garden cannot be made private.",
+                "Back Room is only accessible through the Middle Room.",
+                "Pool table remains accessible unless Back Room is booked privately."
+            ]
+        },
+        "groups": "Groups up to 50 welcome. For larger events, contact us.",
+        "payment_methods": [
+            "Cash",
+            "Card",
+            "Contactless",
+            "Apple Pay",
+            "Google Pay"
+        ]
+    },
+    "facilities": {
+        "indoor": {
+            "available": true,
+            "features": [
+                "Bar seating",
+                "Table seating",
+                "Standing tables"
+            ]
+        },
+        "outdoor": {
+            "available": true,
+            "type": "Beer garden",
+            "weather_dependent": true
+        },
+        "accessibility": {
+            "wheelchair_access": true,
+            "notes": [
+                "Restroom access may require assistance"
+            ]
+        },
+        "amenities": [
+            "Wi-Fi",
+            "Pool table",
+            "Dog-friendly",
+            "Digital ordering",
+            "Heated beer garden (seasonal)",
+            "Live sports screenings (select events)",
+            "Family-friendly"
+        ]
+    },
+    "partnerships": {
+        "sports": [
+            "Berlin Irish Rugby Club"
+        ],
+        "beer": [
+            "Untappd",
+            "Berlin Drinks",
+            "Hopfenhelden"
+        ]
     }
-  },
-  "partnerships": {
-    "sports": ["Berlin Irish Rugby Club"],
-    "beer": ["Untappd", "Berlin Drinks", "Hopfenhelden"]
-  }
-} 
+}

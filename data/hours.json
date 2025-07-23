@@ -1,72 +1,79 @@
 {
-  "regular_hours": {
-    "monday": {
-      "status": "closed"
+    "regular_hours": {
+        "monday": {
+            "status": "open",
+            "hours": {
+                "from": "15:00",
+                "to": "01:00"
+            }
+        },
+        "tuesday": {
+            "status": "open",
+            "hours": {
+                "from": "15:00",
+                "to": "01:00"
+            }
+        },
+        "wednesday": {
+            "status": "open",
+            "hours": {
+                "from": "15:00",
+                "to": "01:00"
+            }
+        },
+        "thursday": {
+            "status": "open",
+            "hours": {
+                "from": "15:00",
+                "to": "01:00"
+            }
+        },
+        "friday": {
+            "status": "open",
+            "hours": {
+                "from": "15:00",
+                "to": "02:00"
+            }
+        },
+        "saturday": {
+            "status": "open",
+            "hours": {
+                "from": "13:00",
+                "to": "02:00"
+            }
+        },
+        "sunday": {
+            "status": "open",
+            "hours": {
+                "from": "13:00",
+                "to": "00:00"
+            }
+        }
     },
-    "tuesday": {
-      "status": "open",
-      "hours": {
-        "from": "16:00",
-        "to": "01:00"
-      }
+    "holiday_hours": {
+        "christmas_eve": {
+            "date": "2024-12-24",
+            "status": "closed"
+        },
+        "christmas_day": {
+            "date": "2024-12-25",
+            "status": "closed"
+        },
+        "boxing_day": {
+            "date": "2024-12-26",
+            "status": "closed"
+        },
+        "new_years_eve": {
+            "date": "2024-12-31",
+            "status": "open",
+            "hours": {
+                "from": "16:00",
+                "to": "04:00"
+            }
+        }
     },
-    "wednesday": {
-      "status": "open",
-      "hours": {
-        "from": "16:00",
-        "to": "01:00"
-      }
-    },
-    "thursday": {
-      "status": "open",
-      "hours": {
-        "from": "16:00",
-        "to": "02:00"
-      }
-    },
-    "friday": {
-      "status": "open",
-      "hours": {
-        "from": "16:00",
-        "to": "03:00"
-      }
-    },
-    "saturday": {
-      "status": "open",
-      "hours": {
-        "from": "14:00",
-        "to": "03:00"
-      }
-    },
-    "sunday": {
-      "status": "open",
-      "hours": {
-        "from": "14:00",
-        "to": "01:00"
-      }
-    }
-  },
-  "holiday_hours": {
-    "christmas_eve": {
-      "date": "2024-12-24",
-      "status": "open",
-      "hours": {
-        "from": "14:00",
-        "to": "20:00"
-      }
-    },
-    "new_years_eve": {
-      "date": "2024-12-31",
-      "status": "open",
-      "hours": {
-        "from": "16:00",
-        "to": "04:00"
-      }
-    }
-  },
-  "notes": [
-    "Kitchen and full menu available during all opening hours",
-    "Last orders 30 minutes before closing",
-    "Beer garden open during regular hours (weather permitting)"
-  ]
-} 
+    "notes": [
+        "Kitchen is open daily until 22:00 on weekends until 23:00",
+        "Beer garden open during regular hours (weather permitting)"
+    ]
+}
