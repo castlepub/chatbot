@@ -7,6 +7,7 @@ import hoursJson from '../data/hours.json';
 import eventsJson from '../data/events.json';
 import faqJson from '../data/castle_faq.json';
 import loyaltyJson from '../data/loyalty.json';
+import pubInfoJson from '../data/pub_info.json';
 
 // Cast imported JSON to their types with safety
 const menuData = menuJson as unknown as MenuData;
@@ -15,6 +16,7 @@ const hoursData = hoursJson as unknown as HoursData;
 const eventsData = eventsJson as unknown as EventsData;
 const faqData = faqJson as unknown as Array<{ question: string; answer: string }>;
 const loyaltyData = loyaltyJson as unknown as LoyaltyData;
+const pubInfoData = pubInfoJson as unknown as { facilities: any };
 
 /**
  * Format menu data for GPT context
@@ -239,24 +241,52 @@ export function formatFAQData(): string {
   return formatted.trim();
 }
 
+/**
+ * Format facilities data for GPT context
+ */
 export function formatFacilitiesData(): string {
-  const { facilities } = faqData;
-  
-  let formatted = "**FACILITIES:**\n\n";
-  
-  // Seating section
-  formatted += "**SEATING:**\n";
-  formatted += `• Indoor: ${facilities.seating.indoor}\n`;
-  formatted += `• Outdoor: ${facilities.seating.outdoor}\n`;
-  formatted += `• Groups: ${facilities.seating.groups}\n\n`;
-  
-  // Features section
-  formatted += "**FEATURES:**\n";
-  Object.entries(facilities.features).forEach(([key, value]) => {
-    formatted += `• ${key}: ${value}\n`;
-  });
-  
-  return formatted;
+  const facilities = pubInfoData.facilities;
+  if (!facilities) return '**FACILITIES:**\nNo facilities information available.';
+
+  let formatted = '**FACILITIES:**\n\n';
+
+  // Indoor section
+  if (facilities.indoor) {
+    formatted += '**INDOOR:**\n';
+    formatted += `• Available: ${facilities.indoor.available ? 'Yes' : 'No'}\n`;
+    if (facilities.indoor.features && facilities.indoor.features.length > 0) {
+      formatted += `• Features: ${facilities.indoor.features.join(', ')}\n`;
+    }
+    formatted += '\n';
+  }
+
+  // Outdoor section
+  if (facilities.outdoor) {
+    formatted += '**OUTDOOR:**\n';
+    formatted += `• Available: ${facilities.outdoor.available ? 'Yes' : 'No'}\n`;
+    formatted += `• Type: ${facilities.outdoor.type || 'N/A'}\n`;
+    formatted += `• Weather dependent: ${facilities.outdoor.weather_dependent ? 'Yes' : 'No'}\n\n`;
+  }
+
+  // Accessibility section
+  if (facilities.accessibility) {
+    formatted += '**ACCESSIBILITY:**\n';
+    formatted += `• Wheelchair access: ${facilities.accessibility.wheelchair_access ? 'Yes' : 'No'}\n`;
+    if (facilities.accessibility.notes && facilities.accessibility.notes.length > 0) {
+      formatted += `• Notes: ${facilities.accessibility.notes.join(', ')}\n`;
+    }
+    formatted += '\n';
+  }
+
+  // Amenities section
+  if (facilities.amenities && facilities.amenities.length > 0) {
+    formatted += '**AMENITIES:**\n';
+    facilities.amenities.forEach((amenity: string) => {
+      formatted += `• ${amenity}\n`;
+    });
+  }
+
+  return formatted.trim();
 }
 
 /**
