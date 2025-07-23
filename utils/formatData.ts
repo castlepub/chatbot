@@ -173,7 +173,11 @@ export function formatHoursData(): string {
   if (Object.keys(holidayHours).length > 0) {
     formatted += `\n**HOLIDAY HOURS:**\n`;
     Object.entries(holidayHours).forEach(([holiday, info]: [string, any]) => {
-      formatted += `${info.date}: ${info.hours.from} - ${info.hours.to}\n`;
+      if (info.status === 'closed' || !info.hours) {
+        formatted += `${info.date}: Closed\n`;
+      } else {
+        formatted += `${info.date}: ${info.hours.from} - ${info.hours.to}\n`;
+      }
     });
   }
   
