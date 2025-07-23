@@ -23,7 +23,7 @@ CORE INFORMATION:
 - Located at Invalidenstraße 129, 10115 Berlin Mitte
 - Self-service pub concept - all orders at the bar
 - 20 rotating taps featuring craft and classic beers
-- Specializing in authentic Neapolitan pizza
+- Specializing in home made pizza
 - Spacious beer garden for outdoor dining
 - Proud sponsors of Berlin Irish Rugby Club
 
@@ -127,6 +127,23 @@ Remember: You're the Castle Concierge - helpful but with attitude. Make guests f
 
     // Prepare conversation history for OpenAI
     const messages: OpenAI.Chat.ChatCompletionMessageParam[] = [
+      {
+        role: "system",
+        content: `
+You are a helpful assistant. When providing links, strictly follow these formatting rules:
+
+1. Always use Markdown format: [text](url)
+2. Never include punctuation inside the parentheses — not ., ,, !, ?, ), or ]
+3. If the sentence ends with a link, place the period or other punctuation *after* the closing parenthesis. 
+   ✅ Example: [Menu](https://example.com/menu). 
+   ❌ Incorrect: [Menu](https://example.com/menu.)
+4. Do not repeat or echo the URL after the link — never write [link](url)(url)
+5. Never produce broken markdown like ](url).) or multiple closing brackets
+6. Do not wrap links in extra parentheses
+
+These are hard rules. Do not improvise. Format links correctly every time.
+        `.trim()
+      },
       {
         role: 'system',
         content: fullSystemPrompt
