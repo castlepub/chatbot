@@ -141,30 +141,27 @@ function getFallbackBeerData(): BeerResponse {
  * Format beer data for GPT context
  */
 export function formatBeerDataForGPT(beerData: BeerResponse): string {
-  const availableBeers = beerData.beers.filter(beer => beer.available);
-  
+  const availableBeers = beerData.beers.filter((beer: any) => beer.status === 'on_tap');
+
   if (availableBeers.length === 0) {
     return "No beers currently available on tap.";
   }
 
-  const beerList = availableBeers.map(beer => {
+  const beerList = availableBeers.map((beer: any) => {
+    // Use displayNumber if present, otherwise tapNumber
+    const tapNum = beer.displayNumber ?? beer.tapNumber;
+    const tapLabel = tapNum ? `Tap #${tapNum}` : '';
     const details = [
-      `**${beer.name}** by ${beer.brewery}`,
+      tapLabel,
+      `**${beer.name.trim()}** by ${beer.brewery.trim()}`,
       `Style: ${beer.style}`,
-      `ABV: ${beer.abv}%`,
-      beer.ibu ? `IBU: ${beer.ibu}` : '',
+      `ABV: ${beer.abv}`,
       `Price: ${beer.price}`,
-      beer.description ? `Description: ${beer.description}` : '',
-      beer.tap_number ? `Tap #${beer.tap_number}` : ''
     ].filter(Boolean).join(' | ');
-    
     return details;
   }).join('\n\n');
 
-  return `**Current Beer Selection (${availableBeers.length} beers on tap):**
-Last updated: ${new Date(beerData.last_updated).toLocaleString('en-DE', { timeZone: 'Europe/Berlin' })}
-
-${beerList}`;
+  return `**Current Beer Selection (${availableBeers.length} beers on tap):**\n\n${beerList}`;
 }
 
 /**
