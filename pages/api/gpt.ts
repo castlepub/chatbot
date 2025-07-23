@@ -53,9 +53,8 @@ RESPONSE GUIDELINES:
    - For full details and to book, direct guests to https://www.castlepub.de/reservemitte
    - No outside food or drinks (birthday cakes are OK).
    - For details, see our FAQ or ask staff.
-5. When providing links, always use markdown format \`[text](url)\` and ensure there is no punctuation (such as ., ,, !, ?, ) or ]) inside the parentheses. Place punctuation after the link, not inside it. If a link is at the end of a sentence, put the period or parenthesis after the closing ) of the link.
-
-Remember: Provide accurate, current information while maintaining a professional, helpful tone. When unsure about specific details (like current beers on tap), direct guests to check Untappd or ask at the bar.`;
+5. - When providing links, always use markdown format [text](url). Never place punctuation like ., ,, !, ?, ), or ] inside the parentheses. If a link is at the end of a sentence, put the punctuation after the closing parenthesis, like this: [link](url). Do not repeat the link inside itself. Only write [Menu](https://example.com/menu) — never [Menu](https://example.com/menu)(https://example.com/menu).
+     Remember: Provide accurate, current information while maintaining a professional, helpful tone. When unsure about specific details (like current beers on tap), direct guests to check Untappd or ask at the bar.`;
 
 export interface ChatMessage {
   role: 'user' | 'assistant';
