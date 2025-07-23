@@ -23,7 +23,7 @@ const pubInfoData = pubInfoJson as unknown as { facilities: any };
  */
 export function formatMenuData(): string {
   let formatted = "**MENU INFORMATION:**\n\n";
-  
+
   // Pizza section
   formatted += "**PIZZAS:**\n";
   menuData.categories.pizza.items.forEach((pizza: MenuItem) => {
@@ -71,6 +71,15 @@ export function formatMenuData(): string {
   menuData.menu_notes.forEach((note: string) => {
     formatted += `• ${note}\n`;
   });
+
+  // Add hotel and links at the end
+  formatted += "\n**NEARBY HOTEL:**\n";
+  formatted += "• Downtown Apartments is located directly above the bar (in Mitte, Berlin).\n";
+  formatted += "• Guests of Downtown Apartments receive a 10% discount at The Castle Pub.\n";
+
+  formatted += "\n**USEFUL LINKS:**\n";
+  formatted += "• Reserve a table: https://www.castlepub.de/reservemitte\n";
+  formatted += "• View the full menu: https://www.castlepub.de/menu\n";
 
   return formatted;
 }
