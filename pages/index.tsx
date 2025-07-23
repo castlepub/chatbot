@@ -7,11 +7,20 @@ interface ChatMessage {
   timestamp: string;
 }
 
+const welcomeMessages = [
+  "Welcome to The Castle Pub! 🍻 Ask me anything about our menu, events, or reservations.",
+  "Hallo! Ich spreche auch Deutsch. Frag mich alles über The Castle Pub.",
+  "Hi there! I’m your digital bartender. Need info in English or German? Just ask!",
+  "Servus! The Castle Concierge here. I can help you in English und auf Deutsch.",
+  "Guten Tag! Need a beer recommendation or want to book a table? I’m here for you (in English & German)."
+];
+const getRandomWelcome = () => welcomeMessages[Math.floor(Math.random() * welcomeMessages.length)];
+
 export default function CastleConcierge() {
   const [messages, setMessages] = useState<ChatMessage[]>([
     {
       role: 'assistant',
-      content: "Well, well, well... another guest! I'm the Castle Concierge. Need to know something about our fine establishment? Ask away, but make it interesting. 🍺",
+      content: getRandomWelcome(),
       timestamp: new Date().toISOString()
     }
   ]);
@@ -100,12 +109,31 @@ export default function CastleConcierge() {
     setMessages([
       {
         role: 'assistant',
-        content: "Fresh start? I like that. What can I help you with at The Castle?",
+        content: getRandomWelcome(),
         timestamp: new Date().toISOString()
       }
     ]);
     setError(null);
   };
+
+  function linkify(text: string) {
+    const urlRegex = /(https?:\/\/[^\s]+)/g;
+    return text.split(urlRegex).map((part, i) =>
+      urlRegex.test(part) ? (
+        <a
+          key={i}
+          href={part}
+          target="_blank"
+          rel="noopener noreferrer"
+          style={{ color: '#1e40af', textDecoration: 'underline', wordBreak: 'break-all' }}
+        >
+          {part}
+        </a>
+      ) : (
+        part
+      )
+    );
+  }
 
   return (
     <>
@@ -136,7 +164,7 @@ export default function CastleConcierge() {
                 className={`message ${message.role === 'user' ? 'user-message' : 'assistant-message'}`}
               >
                 <div className="message-content">
-                  <div className="message-text">{message.content}</div>
+                  <div className="message-text">{linkify(message.content)}</div>
                   <div className="message-time">{formatTime(message.timestamp)}</div>
                 </div>
               </div>
