@@ -1,0 +1,77 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Castle Pub - Chat Widget Test</title>
+    <style>
+        body {
+            font-family: Arial, sans-serif;
+            margin: 0;
+            padding: 20px;
+            background: linear-gradient(135deg, #8B4513, #D2691E);
+            min-height: 100vh;
+            color: white;
+        }
+        .container {
+            max-width: 800px;
+            margin: 0 auto;
+            text-align: center;
+        }
+        h1 {
+            font-size: 3em;
+            margin-bottom: 20px;
+            text-shadow: 2px 2px 4px rgba(0,0,0,0.3);
+        }
+        p {
+            font-size: 1.2em;
+            line-height: 1.6;
+            margin-bottom: 30px;
+        }
+        .features {
+            display: grid;
+            grid-template-columns: repeat(auto-fit, minmax(250px, 1fr));
+            gap: 20px;
+            margin-top: 40px;
+        }
+        .feature {
+            background: rgba(255,255,255,0.1);
+            padding: 20px;
+            border-radius: 10px;
+            backdrop-filter: blur(10px);
+        }
+        .feature h3 {
+            margin-top: 0;
+            color: #FFD700;
+        }
+    </style>
+</head>
+<body>
+    <div class="container">
+        <h1>🍺 Castle Pub</h1>
+        <p>Welcome to The Castle Pub! We're a modern self-service pub in Berlin Mitte, known for our craft beer selection and Neapolitan pizzas.</p>
+        
+        <div class="features">
+            <div class="feature">
+                <h3>🍕 Craft Pizza</h3>
+                <p>Authentic Neapolitan pizzas made fresh daily</p>
+            </div>
+            <div class="feature">
+                <h3>🍺 20 Craft Beers</h3>
+                <p>Rotating selection of craft and classic beers on tap</p>
+            </div>
+            <div class="feature">
+                <h3>🌳 Beer Garden</h3>
+                <p>Spacious outdoor seating perfect for Berlin weather</p>
+            </div>
+        </div>
+        
+        <p style="margin-top: 40px; font-size: 1em; opacity: 0.8;">
+            Look for the chat bubble in the bottom right corner to ask questions about our menu, hours, or reservations!
+        </p>
+    </div>
+
+    <!-- Chat Widget Script -->
+    <script src="chat-widget.js"></script>
+</body>
+</html> 
