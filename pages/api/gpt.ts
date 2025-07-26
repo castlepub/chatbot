@@ -117,8 +117,16 @@ export interface ChatResponse {
 
 // Add this function to fix links in the output
 function fixLinks(text: string): string {
-  // Remove trailing punctuation (.,!?)]}) immediately after URLs
-  return text.replace(/(https?:\/\/[^\s.,!?)\]}\]]+)([.,!?)\]}\]]+)(?=\s|$)/g, '$1');
+  // Remove trailing punctuation immediately after URLs
+  // Handle various punctuation marks: . , ! ? ) ] } 
+  
+  // First, handle URLs ending with punctuation followed by space or end of string
+  let fixed = text.replace(/(https?:\/\/[^\s.,!?)\]}\]]+)([.,!?)\]}\]]+)(?=\s|$)/g, '$1');
+  
+  // Then handle URLs ending with punctuation followed by any character
+  fixed = fixed.replace(/(https?:\/\/[^\s.,!?)\]}\]]+)([.,!?)\]}\]]+)/g, '$1');
+  
+  return fixed;
 }
 
 export default async function handler(
@@ -230,7 +238,9 @@ Always leave a space or end the sentence first:
       "Sorry, I'm having a moment here. Try asking me again?";
 
     // Fix links in the response before sending
+    console.log('Original response:', response);
     const fixedResponse = fixLinks(response);
+    console.log('Fixed response:', fixedResponse);
 
     // Log the interaction (remove in production or use proper logging)
     console.log(`Castle Concierge - User: ${message.substring(0, 50)}... | Response: ${fixedResponse.substring(0, 50)}...`);
