@@ -71,6 +71,17 @@ export interface ChatResponse {
   error?: string;
 }
 
+// Add this function to fix links in the output
+function fixLinks(text: string): string {
+  // Remove punctuation immediately after a URL
+  return text.replace(/(https?:\/\/[\w\-\.\/?#=&%]+)([.,!?)\]]+)/g, (match, url, punct) => {
+    // Only move punctuation if it is not part of the URL
+    return url + punct.replace(/[^.,!?)\]]/g, '');
+  }).replace(/(https?:\/\/[\w\-\.\/?#=&%]+)\.(\s|$)/g, (match, url, space) => {
+    return url + '.' + space;
+  });
+}
+
 export default async function handler(
   req: NextApiRequest,
   res: NextApiResponse<ChatResponse>
@@ -174,10 +185,13 @@ Always leave a space or end the sentence first.
     const response = completion.choices[0]?.message?.content || 
       "Sorry, I'm having a moment here. Try asking me again?";
 
-    // Log the interaction (remove in production or use proper logging)
-    console.log(`Castle Concierge - User: ${message.substring(0, 50)}... | Response: ${response.substring(0, 50)}...`);
+    // Fix links in the response before sending
+    const fixedResponse = fixLinks(response);
 
-    return res.status(200).json({ response });
+    // Log the interaction (remove in production or use proper logging)
+    console.log(`Castle Concierge - User: ${message.substring(0, 50)}... | Response: ${fixedResponse.substring(0, 50)}...`);
+
+    return res.status(200).json({ response: fixedResponse });
 
   } catch (error) {
     console.error('Castle Concierge API Error:', error);
