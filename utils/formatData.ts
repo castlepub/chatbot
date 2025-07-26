@@ -13,7 +13,24 @@ import pubInfoJson from '../data/pub_info.json';
 const menuData = menuJson as unknown as MenuData;
 const drinksData = drinksJson as unknown as DrinksData;
 const hoursData = hoursJson as unknown as HoursData;
-const eventsData = eventsJson as unknown as EventsData;
+const eventsData = eventsJson as unknown as EventsData & {
+  upcoming_events?: {
+    [key: string]: {
+      [key: string]: {
+        name: string;
+        date: string;
+        time: string;
+        description: string;
+      };
+    };
+  };
+  venue_info: {
+    atmosphere: string;
+    location: string;
+    specialties: string[];
+    events_page?: string;
+  };
+};
 const faqData = faqJson as unknown as Array<{ question: string; answer: string }>;
 const loyaltyData = loyaltyJson as unknown as LoyaltyData;
 const pubInfoData = pubInfoJson as unknown as { 
