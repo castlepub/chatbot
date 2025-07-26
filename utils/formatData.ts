@@ -16,7 +16,14 @@ const hoursData = hoursJson as unknown as HoursData;
 const eventsData = eventsJson as unknown as EventsData;
 const faqData = faqJson as unknown as Array<{ question: string; answer: string }>;
 const loyaltyData = loyaltyJson as unknown as LoyaltyData;
-const pubInfoData = pubInfoJson as unknown as { facilities: any };
+const pubInfoData = pubInfoJson as unknown as { 
+  facilities: any; 
+  contact?: {
+    phone?: string;
+    email?: string;
+    social?: { [key: string]: string };
+  };
+};
 
 /**
  * Format menu data for GPT context
@@ -202,40 +209,61 @@ export function formatHoursData(): string {
  * Format events data for GPT context
  */
 export function formatEventsData(): string {
-  // Add safety checks for the data structure
-  const events = (eventsData as any).events || [];
-  const recurring = (eventsData as any).recurring || [];
-  const features = (eventsData as any).features || [];
+  let formatted = "**EVENTS & FEATURES:**\n\n";
   
-  let formatted = "**UPCOMING EVENTS:**\n\n";
-  
-  // Regular events
-  if (events.length > 0) {
-    formatted += "**SPECIAL EVENTS:**\n";
-    events.slice(0, 3).forEach((event: any) => {
-      formatted += `• ${event.name || 'Event'} - ${event.date || 'TBA'}\n`;
-      if (event.description) {
-        formatted += `  ${event.description}\n`;
+  // Regular features
+  if (eventsData.regular_features) {
+    formatted += "**REGULAR FEATURES:**\n";
+    Object.entries(eventsData.regular_features).forEach(([key, feature]: [string, any]) => {
+      formatted += `• ${feature.name}: ${feature.description}\n`;
+      if (feature.schedule) {
+        formatted += `  Schedule: ${feature.schedule}\n`;
+      }
+      if (feature.note) {
+        formatted += `  Note: ${feature.note}\n`;
       }
     });
     formatted += "\n";
   }
   
-  // Recurring events
-  if (recurring.length > 0) {
-    formatted += "**REGULAR EVENTS:**\n";
-    recurring.forEach((event: any) => {
-      formatted += `• ${event.name || 'Regular Event'} - ${event.schedule || 'Check for updates'}\n`;
+  // Special features
+  if (eventsData.special_features) {
+    formatted += "**SPECIAL FEATURES:**\n";
+    Object.entries(eventsData.special_features).forEach(([key, feature]: [string, any]) => {
+      formatted += `• ${feature.name}: ${feature.description}\n`;
+      if (feature.rotation) {
+        formatted += `  ${feature.rotation}\n`;
+      }
+      if (feature.info) {
+        formatted += `  ${feature.info}\n`;
+      }
     });
     formatted += "\n";
   }
   
-  // Event features
-  if (features.length > 0) {
-    formatted += "**EVENT FEATURES:**\n";
-    features.forEach((feature: any) => {
-      formatted += `• ${feature.name || 'Feature'}: ${feature.description || 'Available'}\n`;
+  // Upcoming events
+  if (eventsData.upcoming_events) {
+    formatted += "**UPCOMING EVENTS:**\n";
+    Object.entries(eventsData.upcoming_events).forEach(([month, monthEvents]: [string, any]) => {
+      Object.entries(monthEvents).forEach(([eventKey, event]: [string, any]) => {
+        formatted += `• ${event.name} - ${event.date} at ${event.time}\n`;
+        if (event.description) {
+          formatted += `  ${event.description}\n`;
+        }
+      });
     });
+    formatted += "\n";
+  }
+  
+  // Venue info
+  if (eventsData.venue_info) {
+    formatted += "**VENUE INFO:**\n";
+    formatted += `• Atmosphere: ${eventsData.venue_info.atmosphere}\n`;
+    formatted += `• Location: ${eventsData.venue_info.location}\n`;
+    formatted += `• Specialties: ${eventsData.venue_info.specialties.join(', ')}\n`;
+    if (eventsData.venue_info.events_page) {
+      formatted += `• Events page: ${eventsData.venue_info.events_page}\n`;
+    }
   }
   
   return formatted;
@@ -368,6 +396,33 @@ export function getCurrentTimeContext(): string {
 }
 
 /**
+ * Format contact information for GPT context
+ */
+export function formatContactData(): string {
+  const contact = pubInfoData.contact;
+  if (!contact) return '**CONTACT:**\nContact information not available.';
+
+  let formatted = '**CONTACT INFORMATION:**\n\n';
+  
+  if (contact.phone) {
+    formatted += `• Phone: ${contact.phone}\n`;
+  }
+  
+  if (contact.email) {
+    formatted += `• Email: ${contact.email}\n`;
+  }
+  
+  if (contact.social) {
+    formatted += '\n**SOCIAL MEDIA:**\n';
+    Object.entries(contact.social).forEach(([platform, url]: [string, string]) => {
+      formatted += `• ${platform.charAt(0).toUpperCase() + platform.slice(1)}: ${url}\n`;
+    });
+  }
+  
+  return formatted.trim();
+}
+
+/**
  * Combine all data for GPT system prompt
  */
 export function getAllFormattedData(): string {
@@ -377,6 +432,7 @@ export function getAllFormattedData(): string {
     formatMenuData(),
     formatEventsData(),
     formatFAQData(),
+    formatContactData(),
     formatLoyaltyData()
   ].join('\n\n---\n\n');
 } 

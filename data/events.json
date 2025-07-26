@@ -15,6 +15,12 @@
       "name": "Self-Service Bar",
       "description": "Order at the bar, find a cozy spot, and enjoy!",
       "note": "No table service or reservations"
+    },
+    "quiz_night": {
+      "name": "Castle Quiz",
+      "description": "Weekly pub quiz in English & German",
+      "schedule": "Every Monday at 7:00 PM",
+      "note": "Great fun for groups and individuals"
     }
   },
   "special_features": {
@@ -30,9 +36,32 @@
       "style": "Traditional Neapolitan style"
     }
   },
+  "upcoming_events": {
+    "july_2025": {
+      "uefa_womens_euro": {
+        "name": "UEFA Women's Euro 2025",
+        "date": "July 28, 2025",
+        "time": "6:00 PM",
+        "description": "Watch the exciting UEFA Women's Euro 2025 matches"
+      },
+      "castle_quiz_july28": {
+        "name": "Castle Quiz",
+        "date": "July 28, 2025",
+        "time": "7:00 PM",
+        "description": "Weekly pub quiz in English & German"
+      },
+      "castle_quiz_august4": {
+        "name": "Castle Quiz",
+        "date": "August 4, 2025",
+        "time": "7:00 PM",
+        "description": "Weekly pub quiz in English & German"
+      }
+    }
+  },
   "venue_info": {
     "atmosphere": "Casual, friendly neighborhood pub",
     "location": "Heart of Berlin Mitte",
-    "specialties": ["Craft Beer", "Neapolitan Pizza", "Sports Viewing", "Beer Garden"]
+    "specialties": ["Craft Beer", "Neapolitan Pizza", "Sports Viewing", "Beer Garden", "Quiz Nights"],
+    "events_page": "https://www.castlepub.de/events"
   }
 } 

@@ -136,10 +136,21 @@ interface EventsData {
   special_features: {
     [key: string]: EventFeature;
   };
+  upcoming_events?: {
+    [key: string]: {
+      [key: string]: {
+        name: string;
+        date: string;
+        time: string;
+        description: string;
+      };
+    };
+  };
   venue_info: {
     atmosphere: string;
     location: string;
     specialties: string[];
+    events_page?: string;
   };
 }
 
