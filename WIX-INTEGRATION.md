@@ -3,15 +3,15 @@
 ## 🚀 Quick Setup for Wix
 
 ### Step 1: Get Your Railway URL
-First, you need your Railway app URL. It should look like:
+Your Railway app URL is:
 ```
-https://your-app-name.railway.app
+https://chatbot-production-ca03.up.railway.app
 ```
 
 ### Step 2: Update the Widget Configuration
-In the `public/chat-widget.js` file, update line 6:
+The widget is already configured with your Railway URL:
 ```javascript
-apiUrl: 'https://your-app-name.railway.app/api/gpt', // Replace with your actual Railway URL
+apiUrl: 'https://chatbot-production-ca03.up.railway.app/api/gpt', // Castle Pub Railway URL
 ```
 
 ### Step 3: Add to Wix Website
@@ -27,7 +27,7 @@ apiUrl: 'https://your-app-name.railway.app/api/gpt', // Replace with your actual
    <script>
    // Castle Pub Chat Widget Configuration
    window.CASTLE_CHAT_CONFIG = {
-     apiUrl: 'https://your-app-name.railway.app/api/gpt',
+     apiUrl: 'https://chatbot-production-ca03.up.railway.app/api/gpt',
      widgetTitle: 'Castle Pub Concierge',
      welcomeMessage: 'Hi! I\'m your Castle Pub assistant. How can I help you today?',
      placeholder: 'Ask me anything about Castle Pub...',
@@ -40,7 +40,7 @@ apiUrl: 'https://your-app-name.railway.app/api/gpt', // Replace with your actual
      }
    };
    </script>
-   <script src="https://your-app-name.railway.app/chat-widget.js"></script>
+   <script src="https://chatbot-production-ca03.up.railway.app/chat-widget.js"></script>
    ```
 
 3. **Set the code to load on:**

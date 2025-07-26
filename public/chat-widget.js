@@ -4,7 +4,7 @@
 
   // Configuration
   const config = {
-    apiUrl: 'https://your-railway-app.railway.app/api/gpt', // Replace with your actual Railway URL
+    apiUrl: 'https://chatbot-production-ca03.up.railway.app/api/gpt', // Castle Pub Railway URL
     widgetTitle: 'Castle Pub Concierge',
     welcomeMessage: 'Hi! I\'m your Castle Pub assistant. How can I help you today?',
     placeholder: 'Ask me anything about Castle Pub...',
