@@ -118,15 +118,11 @@ export interface ChatResponse {
 // Add this function to fix links in the output
 function fixLinks(text: string): string {
   // Remove trailing punctuation immediately after URLs
-  // Handle various punctuation marks: . , ! ? ) ] } 
+  // This regex is more precise - it looks for URLs followed by punctuation at the end
+  // but preserves dots within the URL structure
   
-  // First, handle URLs ending with punctuation followed by space or end of string
-  let fixed = text.replace(/(https?:\/\/[^\s.,!?)\]}\]]+)([.,!?)\]}\]]+)(?=\s|$)/g, '$1');
-  
-  // Then handle URLs ending with punctuation followed by any character
-  fixed = fixed.replace(/(https?:\/\/[^\s.,!?)\]}\]]+)([.,!?)\]}\]]+)/g, '$1');
-  
-  return fixed;
+  // Match URLs that end with punctuation followed by space or end of string
+  return text.replace(/(https?:\/\/[^\s!?)\]}\]]+)([!?)\]}\]]+)(?=\s|$)/g, '$1');
 }
 
 export default async function handler(
