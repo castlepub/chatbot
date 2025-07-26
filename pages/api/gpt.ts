@@ -117,13 +117,8 @@ export interface ChatResponse {
 
 // Add this function to fix links in the output
 function fixLinks(text: string): string {
-  // Remove punctuation immediately after a URL
-  return text.replace(/(https?:\/\/[\w\-\.\/?#=&%]+)([.,!?)\]]+)/g, (match, url, punct) => {
-    // Only move punctuation if it is not part of the URL
-    return url + punct.replace(/[^.,!?)\]]/g, '');
-  }).replace(/(https?:\/\/[\w\-\.\/?#=&%]+)\.(\s|$)/g, (match, url, space) => {
-    return url + '.' + space;
-  });
+  // Remove trailing punctuation (.,!?)]}) immediately after URLs
+  return text.replace(/(https?:\/\/[^\s.,!?)\]}\]]+)([.,!?)\]}\]]+)(?=\s|$)/g, '$1');
 }
 
 export default async function handler(
@@ -182,19 +177,24 @@ Remember: You're the Castle Concierge - helpful but with attitude. Make guests f
 
     // Prepare conversation history for OpenAI
     const messages: OpenAI.Chat.ChatCompletionMessageParam[] = [
-      {
-        role: "system",
-        content: `
-Do not use Markdown for links.
+              {
+          role: "system",
+          content: `
+CRITICAL: Do not use Markdown for links.
 
 When you share a link, always use raw format like:
 ✅ You can see the menu here: https://www.castlepub.de/menu
 
-Do not place any punctuation immediately after the link.
-Never write: https://www.castlepub.de/menu.
-Always leave a space or end the sentence first.
+NEVER add punctuation immediately after a URL:
+❌ https://www.castlepub.de/menu.
+❌ https://www.castlepub.de/menu,
+❌ https://www.castlepub.de/menu)
+
+Always leave a space or end the sentence first:
+✅ https://www.castlepub.de/menu for more details.
+✅ Visit https://www.castlepub.de/menu to see our menu.
         `.trim()
-      },
+        },
       {
         role: 'system',
         content: fullSystemPrompt
