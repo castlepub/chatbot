@@ -16,12 +16,17 @@ const openai = new OpenAI({
   project: 'proj_sbPfzENXvsKlbcCtkOgQwZ3k' // Explicit project ID for Railway/OpenAI
 });
 
-// Telegram notification function
-async function sendBotUsageNotification(userMessage: string, botResponse: string, req: NextApiRequest) {
-  try {
-    const botToken = process.env.TELEGRAM_BOT_TOKEN || '8494849390:AAE7iwidv50qFLuTveBV0oOCWg_kVTWram4';
-    const chatId = process.env.TELEGRAM_CHAT_ID || '163491752';
+        // Telegram notification function
+        async function sendBotUsageNotification(userMessage: string, botResponse: string, req: NextApiRequest) {
+          try {
+            const botToken = process.env.TELEGRAM_BOT_TOKEN;
+            const chatId = process.env.TELEGRAM_CHAT_ID; // Can be personal chat ID or group chat ID
     
+    if (!botToken || !chatId) {
+      console.error('Telegram bot token or chat ID not set in environment variables.');
+      return;
+    }
+
     const message = `
 🤖 *Castle Pub Bot Usage*
 
