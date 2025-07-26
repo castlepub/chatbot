@@ -225,13 +225,19 @@ export function formatHoursData(): string {
 /**
  * Format events data for GPT context
  */
-export function formatEventsData(): string {
+export async function formatEventsData(): Promise<string> {
+  // Import the dynamic events fetching
+  const { getCurrentEventsData } = await import('./fetchEventsData');
+  
+  // Get current events data (from website or fallback to static)
+  const currentEventsData = await getCurrentEventsData();
+  
   let formatted = "**EVENTS & FEATURES:**\n\n";
   
   // Regular features
-  if (eventsData.regular_features) {
+  if (currentEventsData.regular_features) {
     formatted += "**REGULAR FEATURES:**\n";
-    Object.entries(eventsData.regular_features).forEach(([key, feature]: [string, any]) => {
+    Object.entries(currentEventsData.regular_features).forEach(([key, feature]: [string, any]) => {
       formatted += `• ${feature.name}: ${feature.description}\n`;
       if (feature.schedule) {
         formatted += `  Schedule: ${feature.schedule}\n`;
@@ -244,9 +250,9 @@ export function formatEventsData(): string {
   }
   
   // Special features
-  if (eventsData.special_features) {
+  if (currentEventsData.special_features) {
     formatted += "**SPECIAL FEATURES:**\n";
-    Object.entries(eventsData.special_features).forEach(([key, feature]: [string, any]) => {
+    Object.entries(currentEventsData.special_features).forEach(([key, feature]: [string, any]) => {
       formatted += `• ${feature.name}: ${feature.description}\n`;
       if (feature.rotation) {
         formatted += `  ${feature.rotation}\n`;
@@ -259,9 +265,9 @@ export function formatEventsData(): string {
   }
   
   // Upcoming events
-  if (eventsData.upcoming_events) {
+  if (currentEventsData.upcoming_events) {
     formatted += "**UPCOMING EVENTS:**\n";
-    Object.entries(eventsData.upcoming_events).forEach(([month, monthEvents]: [string, any]) => {
+    Object.entries(currentEventsData.upcoming_events).forEach(([month, monthEvents]: [string, any]) => {
       Object.entries(monthEvents).forEach(([eventKey, event]: [string, any]) => {
         formatted += `• ${event.name} - ${event.date} at ${event.time}\n`;
         if (event.description) {
@@ -273,13 +279,13 @@ export function formatEventsData(): string {
   }
   
   // Venue info
-  if (eventsData.venue_info) {
+  if (currentEventsData.venue_info) {
     formatted += "**VENUE INFO:**\n";
-    formatted += `• Atmosphere: ${eventsData.venue_info.atmosphere}\n`;
-    formatted += `• Location: ${eventsData.venue_info.location}\n`;
-    formatted += `• Specialties: ${eventsData.venue_info.specialties.join(', ')}\n`;
-    if (eventsData.venue_info.events_page) {
-      formatted += `• Events page: ${eventsData.venue_info.events_page}\n`;
+    formatted += `• Atmosphere: ${currentEventsData.venue_info.atmosphere}\n`;
+    formatted += `• Location: ${currentEventsData.venue_info.location}\n`;
+    formatted += `• Specialties: ${currentEventsData.venue_info.specialties.join(', ')}\n`;
+    if (currentEventsData.venue_info.events_page) {
+      formatted += `• Events page: ${currentEventsData.venue_info.events_page}\n`;
     }
   }
   
