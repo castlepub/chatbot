@@ -273,6 +273,8 @@ export async function formatEventsData(): Promise<string> {
         if (event.description) {
           formatted += `  ${event.description}\n`;
         }
+        // Add a clear identifier for easy searching
+        formatted += `  [EVENT: ${event.name} on ${event.date}]\n`;
       });
     });
     formatted += "\n";
@@ -402,12 +404,22 @@ export function getCurrentTimeContext(): string {
   const dayName = days[berlinTime.getDay()];
   const currentTime = berlinTime.toTimeString().slice(0, 5);
   
+  // Get tomorrow's date for event queries
+  const tomorrow = new Date(berlinTime);
+  tomorrow.setDate(tomorrow.getDate() + 1);
+  const tomorrowDate = tomorrow.toLocaleDateString('en-US', { 
+    weekday: 'long', 
+    year: 'numeric', 
+    month: 'long', 
+    day: 'numeric' 
+  });
+  
   // Handle both old and new data structures
   const regularHours = (hoursData as any).regular_hours || (hoursData as any).opening_hours;
   const todayHours = regularHours[dayName];
   
   if (!todayHours) {
-    return `**CURRENT CONTEXT:**\nDay: ${dayName.charAt(0).toUpperCase() + dayName.slice(1)}\nTime: ${currentTime} (Berlin time)\nToday's hours: Check at venue`;
+    return `**CURRENT CONTEXT:**\nDay: ${dayName.charAt(0).toUpperCase() + dayName.slice(1)}\nTime: ${currentTime} (Berlin time)\nToday's hours: Check at venue\nTomorrow: ${tomorrowDate}`;
   }
   
   let hoursString = todayHours.status === 'closed' ? 'Closed today' : 
@@ -415,7 +427,7 @@ export function getCurrentTimeContext(): string {
     todayHours.open && todayHours.close ? `${todayHours.open}-${todayHours.close}` :
     'Check at venue';
   
-  return `**CURRENT CONTEXT:**\nDay: ${dayName.charAt(0).toUpperCase() + dayName.slice(1)}\nTime: ${currentTime} (Berlin time)\nToday's hours: ${hoursString}`;
+  return `**CURRENT CONTEXT:**\nDay: ${dayName.charAt(0).toUpperCase() + dayName.slice(1)}\nTime: ${currentTime} (Berlin time)\nToday's hours: ${hoursString}\nTomorrow: ${tomorrowDate}`;
 }
 
 /**
@@ -448,12 +460,14 @@ export function formatContactData(): string {
 /**
  * Combine all data for GPT system prompt
  */
-export function getAllFormattedData(): string {
+export async function getAllFormattedData(): Promise<string> {
+  const eventsData = await formatEventsData();
+  
   return [
     getCurrentTimeContext(),
     formatHoursData(),
     formatMenuData(),
-    formatEventsData(),
+    eventsData,
     formatFAQData(),
     formatContactData(),
     formatLoyaltyData()

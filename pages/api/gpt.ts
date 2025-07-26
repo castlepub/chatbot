@@ -82,15 +82,21 @@ RESPONSE GUIDELINES:
 1. Opening Hours:
    - Clearly state we are open every day
    - Kitchen hours: from 15:00 to 22:00 and on weekends from 13:00 to 23:00
-2. Beer Selection:
+2. Events & Activities:
+   - ALWAYS check the upcoming events data when asked about events, games, or activities
+   - Provide specific dates, times, and descriptions for upcoming events
+   - Mention regular features like Castle Quiz (every Monday at 7:00 PM)
+   - For sports events, check the upcoming events and regular features
+   - If someone asks about "tomorrow's game" or similar, check the events data for the next day
+3. Beer Selection:
    - Direct guests to our menu link https://www.castlepub.de/menu 
    - Highlight our 20-tap rotating selection
    - Mention both craft and classic options
    - ask guests what beer they like and recommend a few based on their preferences from our menu  
-3. Food Service:
+4. Food Service:
    - Emphasize our home made pizza 
    - Mention self-service at the bar
-4. Seating & Reservations:
+5. Seating & Reservations:
    - Reservations are highly recommended for groups and special events.
    - Free reservations available for Middle Room (up to 50 people), Back Room (up to 30), Front Room (up to 30), and Beer Garden (up to 50, covered in winter).
    - Private room rental available for Back and Middle Rooms (fee applies).
@@ -118,11 +124,16 @@ export interface ChatResponse {
 // Add this function to fix links in the output
 function fixLinks(text: string): string {
   // Remove trailing punctuation immediately after URLs
-  // This regex is more precise - it looks for URLs followed by punctuation at the end
-  // but preserves dots within the URL structure
+  // This regex matches URLs followed by common punctuation marks
+  let cleaned = text.replace(/(https?:\/\/[^\s]+?)([.,;!?)\]}\]]+)(?=\s|$)/g, '$1');
   
-  // Match URLs that end with punctuation followed by space or end of string
-  return text.replace(/(https?:\/\/[^\s!?)\]}\]]+)([!?)\]}\]]+)(?=\s|$)/g, '$1');
+  // Also fix URLs that might have trailing punctuation without space
+  cleaned = cleaned.replace(/(https?:\/\/[^\s]+?)([.,;!?)\]}\]]+)$/g, '$1');
+  
+  // Remove any markdown link formatting
+  cleaned = cleaned.replace(/\[([^\]]+)\]\(([^)]+)\)/g, '$2');
+  
+  return cleaned;
 }
 
 export default async function handler(
@@ -156,7 +167,7 @@ export default async function handler(
     }
 
     // Get all pub data and current beer selection
-    const pubData = getAllFormattedData();
+    const pubData = await getAllFormattedData();
     let beerData = '';
     
     try {
@@ -181,24 +192,29 @@ Remember: You're the Castle Concierge - helpful but with attitude. Make guests f
 
     // Prepare conversation history for OpenAI
     const messages: OpenAI.Chat.ChatCompletionMessageParam[] = [
-              {
-          role: "system",
-          content: `
-CRITICAL: Do not use Markdown for links.
+      {
+        role: "system",
+        content: `
+CRITICAL LINK FORMATTING RULES:
 
-When you share a link, always use raw format like:
-✅ You can see the menu here: https://www.castlepub.de/menu
+1. NEVER use Markdown formatting for links
+2. NEVER add punctuation immediately after a URL
+3. Always provide clean, clickable URLs
 
-NEVER add punctuation immediately after a URL:
-❌ https://www.castlepub.de/menu.
-❌ https://www.castlepub.de/menu,
-❌ https://www.castlepub.de/menu)
+CORRECT FORMAT:
+✅ "You can see the menu here: https://www.castlepub.de/menu"
+✅ "Visit https://www.castlepub.de/menu to see our menu."
+✅ "For reservations, go to https://www.castlepub.de/reservemitte"
 
-Always leave a space or end the sentence first:
-✅ https://www.castlepub.de/menu for more details.
-✅ Visit https://www.castlepub.de/menu to see our menu.
+INCORRECT FORMAT:
+❌ "https://www.castlepub.de/menu."
+❌ "https://www.castlepub.de/menu,"
+❌ "https://www.castlepub.de/menu)"
+❌ "[Menu](https://www.castlepub.de/menu)"
+
+IMPORTANT: Always leave a space between the URL and any punctuation that follows.
         `.trim()
-        },
+      },
       {
         role: 'system',
         content: fullSystemPrompt
@@ -225,7 +241,7 @@ Always leave a space or end the sentence first:
       model: 'gpt-3.5-turbo',
       messages: messages,
       max_tokens: 500,
-      temperature: 0.8, // Slightly higher for personality
+      temperature: 0.5, // Lower temperature for more predictable output
       presence_penalty: 0.1,
       frequency_penalty: 0.1,
     });

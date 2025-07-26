@@ -37,6 +37,46 @@
     }
   },
   "upcoming_events": {
+    "december_2024": {
+      "castle_quiz_dec23": {
+        "name": "Castle Quiz",
+        "date": "December 23, 2024",
+        "time": "7:00 PM",
+        "description": "Weekly pub quiz in English & German - last quiz before Christmas!"
+      },
+      "castle_quiz_dec30": {
+        "name": "Castle Quiz",
+        "date": "December 30, 2024",
+        "time": "7:00 PM",
+        "description": "Weekly pub quiz in English & German - New Year's Eve special!"
+      }
+    },
+    "january_2025": {
+      "castle_quiz_jan6": {
+        "name": "Castle Quiz",
+        "date": "January 6, 2025",
+        "time": "7:00 PM",
+        "description": "Weekly pub quiz in English & German - first quiz of the new year!"
+      },
+      "castle_quiz_jan13": {
+        "name": "Castle Quiz",
+        "date": "January 13, 2025",
+        "time": "7:00 PM",
+        "description": "Weekly pub quiz in English & German"
+      },
+      "castle_quiz_jan20": {
+        "name": "Castle Quiz",
+        "date": "January 20, 2025",
+        "time": "7:00 PM",
+        "description": "Weekly pub quiz in English & German"
+      },
+      "castle_quiz_jan27": {
+        "name": "Castle Quiz",
+        "date": "January 27, 2025",
+        "time": "7:00 PM",
+        "description": "Weekly pub quiz in English & German"
+      }
+    },
     "july_2025": {
       "uefa_womens_euro": {
         "name": "UEFA Women's Euro 2025",
