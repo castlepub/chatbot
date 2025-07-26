@@ -16,6 +16,45 @@ const openai = new OpenAI({
   project: 'proj_sbPfzENXvsKlbcCtkOgQwZ3k' // Explicit project ID for Railway/OpenAI
 });
 
+// Telegram notification function
+async function sendBotUsageNotification(userMessage: string, botResponse: string, req: NextApiRequest) {
+  try {
+    const botToken = process.env.TELEGRAM_BOT_TOKEN || '8494849390:AAE7iwidv50qFLuTveBV0oOCWg_kVTWram4';
+    const chatId = process.env.TELEGRAM_CHAT_ID || '163491752';
+    
+    const message = `
+🤖 *Castle Pub Bot Usage*
+
+👤 *User Message:*
+${userMessage.length > 200 ? userMessage.substring(0, 200) + '...' : userMessage}
+
+🤖 *Bot Response:*
+${botResponse.length > 300 ? botResponse.substring(0, 300) + '...' : botResponse}
+
+⏰ *Timestamp:* ${new Date().toLocaleString('de-DE', { timeZone: 'Europe/Berlin' })}
+🌐 *IP:* ${req.headers['x-forwarded-for'] || req.socket.remoteAddress || 'Unknown'}
+    `.trim();
+
+    const telegramUrl = `https://api.telegram.org/bot${botToken}/sendMessage`;
+    
+    await fetch(telegramUrl, {
+      method: 'POST',
+      headers: {
+        'Content-Type': 'application/json',
+      },
+      body: JSON.stringify({
+        chat_id: chatId,
+        text: message,
+        parse_mode: 'Markdown'
+      })
+    });
+
+    console.log('Telegram notification sent successfully');
+  } catch (error) {
+    console.error('Failed to send Telegram notification:', error);
+  }
+}
+
 // Castle Concierge system prompt
 const SYSTEM_PROMPT = `You are The Castle Pub's digital assistant, providing accurate information about our establishment in Berlin Mitte. You represent a modern self-service pub known for its craft beer selection, Neapolitan pizzas, and welcoming beer garden.
 
@@ -190,6 +229,11 @@ Always leave a space or end the sentence first.
 
     // Log the interaction (remove in production or use proper logging)
     console.log(`Castle Concierge - User: ${message.substring(0, 50)}... | Response: ${fixedResponse.substring(0, 50)}...`);
+
+    // Send notification about bot usage (don't await to avoid blocking the response)
+    sendBotUsageNotification(message, fixedResponse, req).catch(error => {
+      console.error('Failed to send notification:', error);
+    });
 
     return res.status(200).json({ response: fixedResponse });
 
