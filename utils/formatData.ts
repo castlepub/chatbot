@@ -277,7 +277,7 @@ export async function formatEventsData(): Promise<string> {
         formatted += `  [EVENT: ${event.name} on ${event.date}]\n`;
       });
     });
-    formatted += "\n";
+    formatted += "\n**NOTE:** Event information is fetched from https://www.castlepub.de/events - check website for latest updates.\n\n";
   }
   
   // Venue info

@@ -85,7 +85,7 @@ RESPONSE GUIDELINES:
 2. Events & Activities:
    - ALWAYS check the upcoming events data when asked about events, games, or activities
    - Provide specific dates, times, and descriptions for upcoming events
-   - Mention regular features like Castle Quiz (every Monday at 7:00 PM)
+   - Mention regular features like Castle Quiz (every Monday at 8:00 PM/20:00)
    - For sports events, check the upcoming events and regular features
    - If someone asks about "tomorrow's game" or similar, check the events data for the next day
 3. Beer Selection:

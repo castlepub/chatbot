@@ -64,66 +64,91 @@ export async function fetchEventsFromWebsite(): Promise<Partial<EventsData>> {
 
 /**
  * Parse events from HTML content
- * This is a basic parser - you might need to adjust based on your website structure
+ * This parser looks for Castle Quiz and other events from the website
  */
 function parseEventsFromHTML(html: string): any {
   const events: any = {};
   
   try {
-    // Look for event patterns in the HTML
-    // This is a simplified example - you'd need to adjust based on your actual HTML structure
+    console.log('Parsing events from website HTML...');
     
-    // Example patterns to look for:
-    // - Dates (like "July 27", "July 28")
-    // - Times (like "6:00 PM", "7:00 PM")
-    // - Event names (like "UEFA Women's Euro 2025", "Castle Quiz")
+    // Look for Castle Quiz information
+    const quizPatterns = [
+      /castle\s*quiz.*?(\d{1,2}:\d{2}|\d{1,2}\s*pm|\d{1,2}\s*am)/gi,
+      /quiz.*?monday.*?(\d{1,2}:\d{2}|\d{1,2}\s*pm|\d{1,2}\s*am)/gi,
+      /monday.*?quiz.*?(\d{1,2}:\d{2}|\d{1,2}\s*pm|\d{1,2}\s*am)/gi
+    ];
     
-    const datePattern = /(July|August)\s+\d{1,2}/g;
-    const timePattern = /\d{1,2}:\d{2}\s*(AM|PM)/g;
-    const eventPattern = /(UEFA Women's Euro 2025|Castle Quiz)/g;
+    let quizTime = "8:00 PM"; // Default fallback
+    let quizFound = false;
     
-    // Extract dates, times, and events
-    const dates = html.match(datePattern) || [];
-    const times = html.match(timePattern) || [];
-    const eventNames = (html.match(eventPattern) || []) as string[];
-    
-    // Group events by month
-    const julyEvents: any = {};
-    const augustEvents: any = {};
-    
-    // This is a simplified mapping - you'd need more sophisticated parsing
-    if (eventNames && eventNames.includes('UEFA Women\'s Euro 2025')) {
-      julyEvents.uefa_womens_euro = {
-        name: "UEFA Women's Euro 2025",
-        date: "July 27, 2025",
-        time: "6:00 PM",
-        description: "Watch the exciting UEFA Women's Euro 2025 matches"
-      };
+    for (const pattern of quizPatterns) {
+      const matches = html.match(pattern);
+      if (matches && matches.length > 0) {
+        console.log('Found quiz pattern:', matches[0]);
+        // Extract time from the match
+        const timeMatch = matches[0].match(/(\d{1,2}:\d{2}|\d{1,2}\s*[ap]m)/i);
+        if (timeMatch) {
+          quizTime = timeMatch[1];
+          quizFound = true;
+          console.log('Extracted quiz time:', quizTime);
+          break;
+        }
+      }
     }
     
-    if (eventNames && eventNames.includes('Castle Quiz')) {
-      julyEvents.castle_quiz_july28 = {
+    // Look for general event patterns
+    const eventPatterns = [
+      /(?:event|happening|tonight|today|tomorrow).*?(\d{1,2}:\d{2}|\d{1,2}\s*[ap]m)/gi,
+      /(\d{1,2}:\d{2}|\d{1,2}\s*[ap]m).*?(?:event|show|match|game)/gi
+    ];
+    
+    const currentDate = new Date();
+    const currentMonth = currentDate.toLocaleDateString('en-US', { month: 'long' }).toLowerCase();
+    const currentYear = currentDate.getFullYear();
+    
+    // Create events for the current period
+    const monthKey = `${currentMonth}_${currentYear}`;
+    events[monthKey] = {};
+    
+    // Add Castle Quiz if found or use default
+    if (quizFound || true) { // Always include quiz info
+      const nextMonday = getNextMonday();
+      events[monthKey].castle_quiz = {
         name: "Castle Quiz",
-        date: "July 28, 2025",
-        time: "7:00 PM",
-        description: "Weekly pub quiz in English & German"
+        date: nextMonday.toLocaleDateString('en-US', { month: 'long', day: 'numeric', year: 'numeric' }),
+        time: quizTime,
+        description: `Weekly pub quiz in English & German${quizFound ? ' (from website)' : ' (check website for current schedule)'}`
       };
-      
-      augustEvents.castle_quiz_august4 = {
-        name: "Castle Quiz",
-        date: "August 4, 2025",
-        time: "7:00 PM",
-        description: "Weekly pub quiz in English & German"
-      };
+      console.log('Added Castle Quiz event:', events[monthKey].castle_quiz);
     }
     
-    if (Object.keys(julyEvents).length > 0) {
-      events.july_2025 = julyEvents;
+    // Look for specific sports events or special events
+    const sportsPatterns = [
+      /(?:match|game|euro|champions|football|rugby|sport).*?(\d{1,2}:\d{2}|\d{1,2}\s*[ap]m)/gi,
+      /(?:watch|viewing|live).*?(?:match|game).*?(\d{1,2}:\d{2}|\d{1,2}\s*[ap]m)/gi
+    ];
+    
+    let eventCounter = 1;
+    for (const pattern of sportsPatterns) {
+      const matches = html.match(pattern);
+      if (matches && matches.length > 0) {
+        matches.slice(0, 3).forEach(match => { // Limit to 3 events
+          const timeMatch = match.match(/(\d{1,2}:\d{2}|\d{1,2}\s*[ap]m)/i);
+          if (timeMatch) {
+            events[monthKey][`sports_event_${eventCounter}`] = {
+              name: "Sports Event",
+              date: "Check website for date",
+              time: timeMatch[1],
+              description: `${match.substring(0, 100)}... (from website)`
+            };
+            eventCounter++;
+          }
+        });
+      }
     }
     
-    if (Object.keys(augustEvents).length > 0) {
-      events.august_2025 = augustEvents;
-    }
+    console.log(`Parsed ${Object.keys(events[monthKey] || {}).length} events from website`);
     
   } catch (error) {
     console.error('Error parsing events from HTML:', error);
@@ -133,22 +158,45 @@ function parseEventsFromHTML(html: string): any {
 }
 
 /**
+ * Get the next Monday's date
+ */
+function getNextMonday(): Date {
+  const today = new Date();
+  const daysUntilMonday = (8 - today.getDay()) % 7 || 7; // 0 = Sunday, 1 = Monday, etc.
+  const nextMonday = new Date(today);
+  nextMonday.setDate(today.getDate() + daysUntilMonday);
+  return nextMonday;
+}
+
+/**
  * Get events data - tries to fetch from website first, falls back to static data
  */
 export async function getCurrentEventsData(): Promise<EventsData> {
   try {
+    console.log('Attempting to fetch events from Castle Pub website...');
     // Try to fetch from website
     const websiteEvents = await fetchEventsFromWebsite();
     
     if (websiteEvents.upcoming_events && Object.keys(websiteEvents.upcoming_events).length > 0) {
       console.log('Successfully fetched events from website');
-      return websiteEvents as EventsData;
+      
+      // Merge website events with static regular features
+      const staticEvents = await import('../data/events.json');
+      const staticData = staticEvents.default as unknown as EventsData;
+      
+      return {
+        regular_features: staticData.regular_features,
+        special_features: staticData.special_features,
+        upcoming_events: websiteEvents.upcoming_events,
+        venue_info: websiteEvents.venue_info || staticData.venue_info
+      } as EventsData;
     }
   } catch (error) {
-    console.log('Falling back to static events data');
+    console.log('Website events fetch failed, using static data:', error instanceof Error ? error.message : String(error));
   }
   
   // Fallback to static data
+  console.log('Using static events data as fallback');
   const staticEvents = await import('../data/events.json');
   return staticEvents.default as unknown as EventsData;
 } 
