@@ -305,20 +305,32 @@ export class TeburioScraper {
        await this.page.screenshot({ path: 'teburio-debug.png' });
        console.log('📸 Screenshot saved: teburio-debug.png');
 
-      // Extract reservation data from table rows
-      const reservations = await this.page.evaluate(() => {
-        // First, let's debug what we actually have
-        const tableRows = document.querySelectorAll('table tbody tr');
-        console.log(`Found ${tableRows.length} table rows`);
-        
-        const results: any[] = [];
-        
-        // Log the first few rows for debugging
-        for (let i = 0; i < Math.min(3, tableRows.length); i++) {
-          const row = tableRows[i];
-          console.log(`Row ${i + 1} content:`, row.textContent?.trim());
-          console.log(`Row ${i + 1} HTML:`, row.innerHTML);
-        }
+              // Extract reservation data from table rows
+        const reservations = await this.page.evaluate(() => {
+          // First, let's debug what we actually have
+          const tableRows = document.querySelectorAll('table tbody tr');
+          console.log(`Found ${tableRows.length} table rows`);
+          
+          const results: any[] = [];
+          
+          // Log ALL rows for debugging
+          for (let i = 0; i < tableRows.length; i++) {
+            const row = tableRows[i];
+            const rowText = row.textContent?.trim();
+            const rowHTML = row.innerHTML;
+            console.log(`Row ${i + 1} content: "${rowText}"`);
+            console.log(`Row ${i + 1} HTML length: ${rowHTML.length}`);
+            
+            // Also check for any data attributes or classes
+            const dataAttrs = Array.from(row.attributes).filter(attr => attr.name.startsWith('data-'));
+            if (dataAttrs.length > 0) {
+              console.log(`Row ${i + 1} data attributes:`, dataAttrs.map(attr => `${attr.name}="${attr.value}"`));
+            }
+            
+            // Check if row has any child elements
+            const children = row.children;
+            console.log(`Row ${i + 1} has ${children.length} children`);
+          }
 
         // Try to extract data from table rows
         tableRows.forEach((row: any, index: number) => {
@@ -363,6 +375,37 @@ export class TeburioScraper {
             console.error(`Error parsing row ${index + 1}:`, error);
           }
         });
+
+        // If no reservations found in table rows, try alternative approaches
+        if (results.length === 0) {
+          console.log('No reservations found in table rows, trying alternative selectors...');
+          
+          // Try looking for any elements that might contain reservation data
+          const alternativeSelectors = [
+            '.reservation', '.booking', '.appointment', '.event',
+            '[data-reservation]', '[data-booking]', '[data-appointment]',
+            '.calendar-event', '.schedule-item', '.time-slot'
+          ];
+          
+          for (const selector of alternativeSelectors) {
+            const elements = document.querySelectorAll(selector);
+            console.log(`Found ${elements.length} elements with selector: ${selector}`);
+            
+            if (elements.length > 0) {
+              // Log the first element for debugging
+              const firstElement = elements[0];
+              console.log(`First ${selector} element text: "${firstElement.textContent?.trim()}"`);
+              console.log(`First ${selector} element HTML: ${firstElement.innerHTML.substring(0, 200)}...`);
+            }
+          }
+          
+          // Also try to find any text that looks like a time
+          const allText = document.body.textContent || '';
+          const timeMatches = allText.match(/\d{1,2}:\d{2}(\s*[AP]M)?/g);
+          if (timeMatches) {
+            console.log('Found time patterns in page text:', timeMatches);
+          }
+        }
 
         return results;
       });
