@@ -88,45 +88,88 @@ export async function getLiveReservationData(): Promise<ReservationData> {
 }
 
 /**
- * Format reservation data for GPT context
+ * Format reservation data for customer-facing GPT context (privacy-safe)
  */
-export async function formatReservationDataForGPT(): Promise<string> {
+export async function formatReservationDataForCustomers(): Promise<string> {
+  const data = await getLiveReservationData();
+  
+  let formatted = "**CURRENT AVAILABILITY:**\n\n";
+  
+  // Room availability (customer-friendly)
+  formatted += "**ROOM AVAILABILITY:**\n";
+  Object.entries(data.room_availability).forEach(([room, availability]) => {
+    const roomName = room.replace('_', ' ').replace(/\b\w/g, l => l.toUpperCase());
+    formatted += `• ${roomName} (${availability.capacity} capacity): `;
+    
+    if (availability.current_bookings_today === 0) {
+      formatted += `Available now - no reservations today\n`;
+    } else if (availability.next_available === 'now') {
+      formatted += `Available now\n`;
+    } else if (availability.next_available === 'Check with staff') {
+      formatted += `Limited availability - check with staff\n`;
+    } else {
+      formatted += `Next available at ${availability.next_available}\n`;
+    }
+  });
+  
+  // General availability info
+  if (data.daily_stats?.today) {
+    const totalReservations = data.daily_stats.today.total_reservations;
+    const busyLevel = totalReservations === 0 ? 'quiet' : 
+                     totalReservations <= 2 ? 'moderate' : 'busy';
+    
+    formatted += `\n**TODAY'S STATUS:**\n`;
+    formatted += `• Current booking level: ${busyLevel}\n`;
+    
+    if (data.daily_stats.today.busiest_time && data.daily_stats.today.busiest_time !== 'Check dashboard') {
+      formatted += `• Busiest expected time: ${data.daily_stats.today.busiest_time}\n`;
+    }
+  }
+  
+  formatted += `\n**NOTE:** For specific reservations or guaranteed seating, visit https://www.castlepub.de/reservemitte\n`;
+  
+  return formatted;
+}
+
+/**
+ * Format detailed reservation data for staff-facing GPT context
+ */
+export async function formatReservationDataForStaff(): Promise<string> {
   const data = await getLiveReservationData();
   const today = new Date().toISOString().split('T')[0];
   const todaysReservations = data.current_reservations[today] || [];
   
-  let formatted = "**CURRENT RESERVATIONS & AVAILABILITY:**\n\n";
+  let formatted = "**STAFF RESERVATION OVERVIEW:**\n\n";
   
-  // Today's reservations
+  // Today's reservations (detailed for staff)
   if (todaysReservations.length > 0) {
     formatted += "**TODAY'S RESERVATIONS:**\n";
     todaysReservations.forEach(res => {
       formatted += `• ${res.time} - ${res.party_size} guests in ${res.room}`;
+      if (res.name && res.name !== 'Private') {
+        formatted += ` (${res.name})`;
+      }
       if (res.special_requests) {
-        formatted += ` (${res.special_requests})`;
+        formatted += ` - ${res.special_requests}`;
       }
       formatted += `\n`;
     });
     formatted += "\n";
   } else {
-    formatted += "**TODAY'S RESERVATIONS:** No reservations currently\n\n";
+    formatted += "**TODAY'S RESERVATIONS:** No reservations scheduled\n\n";
   }
   
-  // Room availability
-  formatted += "**ROOM AVAILABILITY:**\n";
+  // Room availability (detailed for staff)
+  formatted += "**ROOM STATUS:**\n";
   Object.entries(data.room_availability).forEach(([room, availability]) => {
     const roomName = room.replace('_', ' ').replace(/\b\w/g, l => l.toUpperCase());
-    formatted += `• ${roomName}: `;
-    if (availability.next_available === 'now') {
-      formatted += `Available now (${availability.capacity} capacity)\n`;
-    } else {
-      formatted += `Next available at ${availability.next_available} (${availability.capacity} capacity)\n`;
-    }
+    formatted += `• ${roomName}: ${availability.current_bookings_today} booking(s) today, `;
+    formatted += `next available: ${availability.next_available}\n`;
   });
   
-  // Daily stats
+  // Detailed stats for staff
   if (data.daily_stats?.today) {
-    formatted += "\n**TODAY'S OVERVIEW:**\n";
+    formatted += "\n**DAILY STATISTICS:**\n";
     formatted += `• Total reservations: ${data.daily_stats.today.total_reservations}\n`;
     formatted += `• Total expected guests: ${data.daily_stats.today.total_guests}\n`;
     formatted += `• Busiest time: ${data.daily_stats.today.busiest_time}\n`;
@@ -143,7 +186,7 @@ export async function formatReservationDataForGPT(): Promise<string> {
     hour: '2-digit',
     minute: '2-digit'
   });
-  formatted += `\n**Last updated:** ${lastUpdated} by ${data.updated_by}\n`;
+  formatted += `\n**Data last updated:** ${lastUpdated}\n`;
   
   return formatted;
 }

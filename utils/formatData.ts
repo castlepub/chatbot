@@ -463,14 +463,14 @@ export function formatContactData(): string {
 export async function getAllFormattedData(): Promise<string> {
   const eventsData = await formatEventsData();
   
-  // Import reservation data formatting
+  // Import reservation data formatting (customer-safe version)
   let reservationData = '';
   try {
-    const { formatReservationDataForGPT } = await import('./fetchReservationData');
-    reservationData = await formatReservationDataForGPT();
+    const { formatReservationDataForCustomers } = await import('./fetchReservationData');
+    reservationData = await formatReservationDataForCustomers();
   } catch (error) {
     console.log('Reservation data not available:', error);
-    reservationData = '**RESERVATIONS:** Contact staff for current availability.';
+    reservationData = '**AVAILABILITY:** Contact staff for current seating information.';
   }
   
   return [
