@@ -105,7 +105,7 @@ export async function formatReservationDataForCustomers(): Promise<string> {
   
   // Check if we have real data from Teburio
   if (data.last_updated === 'never' || data.updated_by === 'none') {
-    return "**CURRENT AVAILABILITY:**\n\nReservation system is currently unavailable. For current availability and bookings, please contact staff directly or visit https://www.castlepub.de/reservemitte\n";
+    return "**CURRENT AVAILABILITY:**\n\n⚠️ **IMPORTANT:** I cannot verify current availability. The reservation system is not connected.\n\n**For accurate availability and bookings, please:**\n• Visit our reservation system: https://www.castlepub.de/reservemitte\n• Call us directly: +49 30 28047126\n• Contact staff when you arrive\n\n**Do not rely on this bot for current availability information.**\n";
   }
   
   let formatted = "**CURRENT AVAILABILITY:**\n\n";
