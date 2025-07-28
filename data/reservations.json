@@ -1,31 +1,47 @@
 {
   "current_reservations": {
-    "2024-12-21": [
+    "2024-12-25": [
       {
         "time": "18:00",
         "party_size": 8,
         "room": "Middle Room",
-        "name": "Schmidt Party",
+        "name": "Schmidt Family",
         "status": "confirmed",
-        "special_requests": "Birthday celebration"
+        "special_requests": "Christmas dinner - need high chairs"
       },
       {
         "time": "19:30",
         "party_size": 4,
         "room": "Back Room",
-        "name": "Business Dinner",
+        "name": "Business Associates",
         "status": "confirmed",
-        "special_requests": "Quiet area requested"
+        "special_requests": "Quiet area requested for meeting"
+      },
+      {
+        "time": "20:00",
+        "party_size": 6,
+        "room": "Front Room",
+        "name": "Mueller Group",
+        "status": "confirmed",
+        "special_requests": "Birthday celebration"
       }
     ],
-    "2024-12-22": [
+    "2024-12-26": [
       {
         "time": "17:00",
         "party_size": 12,
         "room": "Beer Garden",
         "name": "Company Event",
         "status": "confirmed",
-        "special_requests": "Team building event"
+        "special_requests": "Team building event - Boxing Day special"
+      },
+      {
+        "time": "18:30",
+        "party_size": 15,
+        "room": "Middle Room",
+        "name": "University Reunion",
+        "status": "confirmed",
+        "special_requests": "Large group - need extra seating"
       }
     ]
   },
@@ -33,32 +49,32 @@
     "middle_room": {
       "capacity": 50,
       "current_bookings_today": 1,
-      "next_available": "20:30"
+      "next_available": "21:00"
     },
     "back_room": {
       "capacity": 30,
       "current_bookings_today": 1,
-      "next_available": "21:00"
+      "next_available": "21:30"
     },
     "front_room": {
       "capacity": 30,
-      "current_bookings_today": 0,
-      "next_available": "now"
+      "current_bookings_today": 1,
+      "next_available": "22:00"
     },
     "beer_garden": {
       "capacity": 50,
-      "current_bookings_today": 1,
-      "next_available": "19:00"
+      "current_bookings_today": 0,
+      "next_available": "now"
     }
   },
   "daily_stats": {
     "today": {
       "total_reservations": 3,
-      "total_guests": 24,
-      "busiest_time": "18:00-20:00",
-      "rooms_booked": ["Middle Room", "Back Room", "Beer Garden"]
+      "total_guests": 18,
+      "busiest_time": "18:00-20:30",
+      "rooms_booked": ["Middle Room", "Back Room", "Front Room"]
     }
   },
-  "last_updated": "2024-12-21T15:30:00Z",
+  "last_updated": "2024-12-25T15:30:00Z",
   "updated_by": "staff"
 } 
