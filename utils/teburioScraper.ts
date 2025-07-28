@@ -299,39 +299,68 @@ export class TeburioScraper {
 
        if (!elementsFound) {
          console.log('No reservation elements found with standard selectors');
-         // Take screenshot for debugging
-         await this.page.screenshot({ path: 'teburio-no-reservations.png' });
        }
+       
+       // Always take a screenshot for debugging
+       await this.page.screenshot({ path: 'teburio-debug.png' });
+       console.log('📸 Screenshot saved: teburio-debug.png');
 
-      // Extract reservation data (adjust selectors based on Teburio's actual structure)
+      // Extract reservation data from table rows
       const reservations = await this.page.evaluate(() => {
-        const items = document.querySelectorAll('.reservation-item, .booking-item, .reservation, .booking');
+        // First, let's debug what we actually have
+        const tableRows = document.querySelectorAll('table tbody tr');
+        console.log(`Found ${tableRows.length} table rows`);
+        
         const results: any[] = [];
+        
+        // Log the first few rows for debugging
+        for (let i = 0; i < Math.min(3, tableRows.length); i++) {
+          const row = tableRows[i];
+          console.log(`Row ${i + 1} content:`, row.textContent?.trim());
+          console.log(`Row ${i + 1} HTML:`, row.innerHTML);
+        }
 
-        items.forEach((item: any) => {
+        // Try to extract data from table rows
+        tableRows.forEach((row: any, index: number) => {
           try {
-            // Extract data from each reservation item
-            // These selectors need to be adjusted based on Teburio's actual HTML structure
-            const timeElement = item.querySelector('.time, .booking-time, [data-time]');
-            const nameElement = item.querySelector('.name, .guest-name, .customer-name');
-            const guestsElement = item.querySelector('.guests, .party-size, .pax');
-            const roomElement = item.querySelector('.room, .table, .area');
-            const notesElement = item.querySelector('.notes, .comment, .special-requests');
-            const statusElement = item.querySelector('.status, .booking-status');
-
-            if (timeElement && nameElement) {
-              results.push({
-                time: timeElement.textContent?.trim() || '',
-                name: nameElement.textContent?.trim() || '',
-                guests: parseInt(guestsElement?.textContent?.trim() || '2'),
-                room: roomElement?.textContent?.trim() || 'Main Area',
-                notes: notesElement?.textContent?.trim() || '',
-                status: statusElement?.textContent?.trim().toLowerCase() || 'confirmed',
-                date: new Date().toISOString().split('T')[0] // Today's date
-              });
+            const cells = row.querySelectorAll('td, th');
+            console.log(`Row ${index + 1} has ${cells.length} cells`);
+            
+            if (cells.length >= 3) {
+              // Try different cell combinations for time, name, guests, room
+              const cellTexts = Array.from(cells).map((cell: any) => cell.textContent?.trim() || '');
+              console.log(`Row ${index + 1} cell texts:`, cellTexts);
+              
+              // Look for time patterns (HH:MM, HH:MM AM/PM)
+              const timePattern = /(\d{1,2}:\d{2}(\s*[AP]M)?)/;
+              const timeMatch = cellTexts.find(text => timePattern.test(text));
+              
+              // Look for guest number patterns
+              const guestPattern = /(\d+)/;
+              const guestMatch = cellTexts.find(text => guestPattern.test(text) && parseInt(text) <= 50);
+              
+              // Skip header rows or empty rows
+              if (timeMatch && guestMatch && !cellTexts.some(text => text.toLowerCase().includes('time') || text.toLowerCase().includes('guest'))) {
+                const time = timeMatch.match(timePattern)?.[1] || '';
+                const guests = parseInt(guestMatch.match(guestPattern)?.[1] || '2');
+                const name = cellTexts.find(text => text.length > 2 && text.length < 50 && !timePattern.test(text) && !guestPattern.test(text)) || 'Guest';
+                const room = cellTexts.find(text => text.toLowerCase().includes('room') || text.toLowerCase().includes('area') || text.toLowerCase().includes('garden')) || 'Main Area';
+                
+                results.push({
+                  time: time,
+                  name: name,
+                  guests: guests,
+                  room: room,
+                  notes: '',
+                  status: 'confirmed',
+                  date: new Date().toISOString().split('T')[0]
+                });
+                
+                console.log(`Extracted reservation: ${time} - ${name} - ${guests} guests - ${room}`);
+              }
             }
           } catch (error) {
-            console.error('Error parsing reservation item:', error);
+            console.error(`Error parsing row ${index + 1}:`, error);
           }
         });
 
