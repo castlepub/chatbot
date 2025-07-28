@@ -276,7 +276,7 @@ export class TeburioScraper {
        }
 
        // Wait for page to load
-       await this.page.waitForTimeout(3000);
+       await new Promise(resolve => setTimeout(resolve, 3000));
 
        // Try multiple selectors for reservations
        const reservationSelectors = [
