@@ -32,7 +32,7 @@ export class TeburioScraper {
       username: process.env.TEBURIO_USERNAME || '',
       password: process.env.TEBURIO_PASSWORD || '',
       loginUrl: process.env.TEBURIO_LOGIN_URL || 'https://app.teburio.com/login',
-      dashboardUrl: process.env.TEBURIO_DASHBOARD_URL || 'https://app.teburio.com/dashboard'
+      dashboardUrl: process.env.TEBURIO_DASHBOARD_URL || process.env.TEBURIO_LOGIN_URL || 'https://app.teburio.com/dashboard'
     };
   }
 
@@ -83,28 +83,173 @@ export class TeburioScraper {
       });
 
       console.log('Logging into Teburio...');
+      console.log('Login URL:', this.credentials.loginUrl);
+      console.log('Username:', this.credentials.username);
+      console.log('Password length:', this.credentials.password.length);
       
-      // Fill login form (adjust selectors based on Teburio's actual form)
-      const usernameSelector = 'input[type="email"], input[name="username"], input[name="email"]';
-      const passwordSelector = 'input[type="password"], input[name="password"]';
-      const submitSelector = 'button[type="submit"], input[type="submit"], .login-button';
+      // Log page info before attempting login
+      const initialPageInfo = await this.page.evaluate(() => {
+        return {
+          title: document.title,
+          url: window.location.href,
+          hasLoginForm: document.querySelector('form') !== null,
+          inputCount: document.querySelectorAll('input').length,
+          buttonCount: document.querySelectorAll('button').length
+        };
+      });
+      console.log('Initial page info:', initialPageInfo);
+      
+      // Try multiple selectors for login form elements
+      const usernameSelectors = [
+        'input[type="email"]',
+        'input[name="username"]', 
+        'input[name="email"]',
+        'input[id="email"]',
+        'input[id="username"]',
+        'input[placeholder*="email" i]',
+        'input[placeholder*="username" i]',
+        'input[class*="email"]',
+        'input[class*="username"]'
+      ];
+      
+      const passwordSelectors = [
+        'input[type="password"]',
+        'input[name="password"]',
+        'input[id="password"]',
+        'input[class*="password"]'
+      ];
+      
+      const submitSelectors = [
+        'button[type="submit"]',
+        'input[type="submit"]',
+        'button:contains("Login")',
+        'button:contains("Sign")',
+        '.login-button',
+        '.submit-button',
+        'button[class*="login"]',
+        'button[class*="submit"]'
+      ];
 
-      await this.page.type(usernameSelector, this.credentials.username);
-      await this.page.type(passwordSelector, this.credentials.password);
+      // Find username field
+      let usernameField = null;
+      for (const selector of usernameSelectors) {
+        try {
+          await this.page.waitForSelector(selector, { timeout: 2000 });
+          usernameField = selector;
+          console.log(`Found username field: ${selector}`);
+          break;
+        } catch (e) {
+          // Continue to next selector
+        }
+      }
       
-      // Click login button
+      // Find password field
+      let passwordField = null;
+      for (const selector of passwordSelectors) {
+        try {
+          await this.page.waitForSelector(selector, { timeout: 2000 });
+          passwordField = selector;
+          console.log(`Found password field: ${selector}`);
+          break;
+        } catch (e) {
+          // Continue to next selector
+        }
+      }
+      
+      if (!usernameField || !passwordField) {
+        console.error('Could not find login form fields');
+        console.log('Username field found:', usernameField);
+        console.log('Password field found:', passwordField);
+        
+        // Log page content for debugging
+        const pageText = await this.page.evaluate(() => {
+          return {
+            title: document.title,
+            url: window.location.href,
+            bodyText: document.body.textContent?.substring(0, 200)
+          };
+        });
+        console.log('Page info:', pageText);
+        
+        throw new Error('Login form fields not found');
+      }
+
+      // Fill in the credentials
+      console.log('Filling username field...');
+      await this.page.type(usernameField, this.credentials.username);
+      
+      console.log('Filling password field...');
+      await this.page.type(passwordField, this.credentials.password);
+      
+      // Find and click submit button
+      let submitButton = null;
+      for (const selector of submitSelectors) {
+        try {
+          const element = await this.page.$(selector);
+          if (element) {
+            submitButton = selector;
+            console.log(`Found submit button: ${selector}`);
+            break;
+          }
+        } catch (e) {
+          // Continue to next selector
+        }
+      }
+      
+      if (!submitButton) {
+        console.error('Could not find submit button');
+        throw new Error('Submit button not found');
+      }
+      
+      console.log('Clicking submit button...');
+      // Click login button and wait for navigation
       await Promise.all([
-        this.page.waitForNavigation({ waitUntil: 'networkidle2' }),
-        this.page.click(submitSelector)
+        this.page.waitForNavigation({ waitUntil: 'networkidle2', timeout: 15000 }),
+        this.page.click(submitButton)
       ]);
 
       // Check if login was successful
       const currentUrl = this.page.url();
-      if (currentUrl.includes('dashboard') || currentUrl.includes('reservations')) {
+      console.log('Current URL after login attempt:', currentUrl);
+      
+      // Look for signs of successful login
+      const isLoggedIn = await this.page.evaluate(() => {
+        // Look for common indicators of successful login
+        const indicators = [
+          'dashboard', 'reservations', 'bookings', 'calendar',
+          'logout', 'profile', 'menu', 'navigation'
+        ];
+        
+        const pageText = document.body.textContent?.toLowerCase() || '';
+        const url = window.location.href.toLowerCase();
+        
+        // Check if we're no longer on a login page
+        const notOnLogin = !pageText.includes('login') && 
+                          !pageText.includes('sign in') && 
+                          !url.includes('login');
+        
+        // Check for positive indicators
+        const hasIndicators = indicators.some(indicator => 
+          pageText.includes(indicator) || url.includes(indicator)
+        );
+        
+        return notOnLogin || hasIndicators;
+      });
+      
+      if (isLoggedIn) {
         console.log('Successfully logged into Teburio');
         return true;
       } else {
-        console.error('Login failed - still on login page');
+        console.error('Login failed - still appears to be on login page');
+        
+        // Take a screenshot for debugging
+        try {
+          await this.page.screenshot({ path: 'teburio-login-failed.png' });
+          console.log('Screenshot saved: teburio-login-failed.png');
+        } catch (e) {
+          console.log('Could not save screenshot');
+        }
+        
         return false;
       }
 
@@ -123,15 +268,40 @@ export class TeburioScraper {
         throw new Error('Scraper not initialized');
       }
 
-      // Navigate to reservations page
-      await this.page.goto(this.credentials.dashboardUrl, { 
-        waitUntil: 'networkidle2' 
-      });
+             // Navigate to reservations page (if different from current page)
+       if (this.page.url() !== this.credentials.dashboardUrl) {
+         await this.page.goto(this.credentials.dashboardUrl, { 
+           waitUntil: 'networkidle2' 
+         });
+       }
 
-      // Wait for reservations to load
-      await this.page.waitForSelector('.reservation-item, .booking-item, .reservation, .booking', {
-        timeout: 10000
-      });
+       // Wait for page to load
+       await this.page.waitForTimeout(3000);
+
+       // Try multiple selectors for reservations
+       const reservationSelectors = [
+         '.reservation-item', '.booking-item', '.reservation', '.booking',
+         '[data-reservation]', '[data-booking]', '.appointment', '.event',
+         'table tbody tr', '.calendar-event', '.schedule-item'
+       ];
+
+       let elementsFound = false;
+       for (const selector of reservationSelectors) {
+         try {
+           await this.page.waitForSelector(selector, { timeout: 2000 });
+           console.log(`Found elements with selector: ${selector}`);
+           elementsFound = true;
+           break;
+         } catch (e) {
+           // Continue to next selector
+         }
+       }
+
+       if (!elementsFound) {
+         console.log('No reservation elements found with standard selectors');
+         // Take screenshot for debugging
+         await this.page.screenshot({ path: 'teburio-no-reservations.png' });
+       }
 
       // Extract reservation data (adjust selectors based on Teburio's actual structure)
       const reservations = await this.page.evaluate(() => {
@@ -233,32 +403,33 @@ export class TeburioScraper {
   /**
    * Get reservations with automatic retry
    */
-  async getReservationsWithRetry(maxRetries: number = 3): Promise<TeburioReservation[]> {
+  async getReservationsWithRetry(maxRetries: number = 2): Promise<TeburioReservation[]> {
     for (let attempt = 1; attempt <= maxRetries; attempt++) {
       try {
-        console.log(`Attempt ${attempt} to fetch reservations...`);
+        console.log(`Teburio scraping attempt ${attempt}/${maxRetries}...`);
         
         const initialized = await this.initialize();
         if (!initialized) {
-          throw new Error('Failed to initialize');
+          throw new Error(`Login failed on attempt ${attempt}`);
         }
 
         const reservations = await this.getTodaysReservations();
         await this.cleanup();
         
+        console.log(`Successfully scraped ${reservations.length} reservations`);
         return reservations;
 
-      } catch (error) {
-        console.error(`Attempt ${attempt} failed:`, error);
+              } catch (error) {
+          console.error(`Attempt ${attempt} failed:`, error instanceof Error ? error.message : String(error));
         await this.cleanup();
         
         if (attempt === maxRetries) {
-          console.error('All attempts failed');
+          console.error('All Teburio scraping attempts failed. Using fallback data.');
           return [];
         }
         
-        // Wait before retry
-        await new Promise(resolve => setTimeout(resolve, 2000 * attempt));
+        // Wait before retry (shorter wait for production)
+        await new Promise(resolve => setTimeout(resolve, 1000 * attempt));
       }
     }
     

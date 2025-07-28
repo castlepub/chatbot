@@ -1,80 +1,35 @@
 {
-  "current_reservations": {
-    "2024-12-25": [
-      {
-        "time": "18:00",
-        "party_size": 8,
-        "room": "Middle Room",
-        "name": "Schmidt Family",
-        "status": "confirmed",
-        "special_requests": "Christmas dinner - need high chairs"
-      },
-      {
-        "time": "19:30",
-        "party_size": 4,
-        "room": "Back Room",
-        "name": "Business Associates",
-        "status": "confirmed",
-        "special_requests": "Quiet area requested for meeting"
-      },
-      {
-        "time": "20:00",
-        "party_size": 6,
-        "room": "Front Room",
-        "name": "Mueller Group",
-        "status": "confirmed",
-        "special_requests": "Birthday celebration"
-      }
-    ],
-    "2024-12-26": [
-      {
-        "time": "17:00",
-        "party_size": 12,
-        "room": "Beer Garden",
-        "name": "Company Event",
-        "status": "confirmed",
-        "special_requests": "Team building event - Boxing Day special"
-      },
-      {
-        "time": "18:30",
-        "party_size": 15,
-        "room": "Middle Room",
-        "name": "University Reunion",
-        "status": "confirmed",
-        "special_requests": "Large group - need extra seating"
-      }
-    ]
-  },
+  "current_reservations": {},
   "room_availability": {
     "middle_room": {
       "capacity": 50,
-      "current_bookings_today": 1,
-      "next_available": "21:00"
+      "current_bookings_today": 0,
+      "next_available": "unknown"
     },
     "back_room": {
       "capacity": 30,
-      "current_bookings_today": 1,
-      "next_available": "21:30"
+      "current_bookings_today": 0,
+      "next_available": "unknown"
     },
     "front_room": {
       "capacity": 30,
-      "current_bookings_today": 1,
-      "next_available": "22:00"
+      "current_bookings_today": 0,
+      "next_available": "unknown"
     },
     "beer_garden": {
       "capacity": 50,
       "current_bookings_today": 0,
-      "next_available": "now"
+      "next_available": "unknown"
     }
   },
   "daily_stats": {
     "today": {
-      "total_reservations": 3,
-      "total_guests": 18,
-      "busiest_time": "18:00-20:30",
-      "rooms_booked": ["Middle Room", "Back Room", "Front Room"]
+      "total_reservations": 0,
+      "total_guests": 0,
+      "busiest_time": "unknown",
+      "rooms_booked": []
     }
   },
-  "last_updated": "2024-12-25T15:30:00Z",
-  "updated_by": "staff"
+  "last_updated": "never",
+  "updated_by": "none"
 } 

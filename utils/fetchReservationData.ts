@@ -70,17 +70,27 @@ export function getRoomAvailability(room?: string): RoomAvailability | { [room: 
  * Get live reservation data from Teburio
  */
 export async function getLiveReservationData(): Promise<ReservationData> {
+  // Check if scraping is disabled
+  if (process.env.DISABLE_TEBURIO_SCRAPING === 'true') {
+    console.log('Teburio scraping is disabled via environment variable');
+    return getReservationData();
+  }
+  
   try {
     // Try to fetch from Teburio first
     const { fetchTeburioReservations, convertTeburioToInternalFormat } = await import('./teburioScraper');
+    console.log('Attempting to fetch reservations from Teburio...');
+    
     const teburioData = await fetchTeburioReservations();
     
     if (teburioData.length > 0) {
       console.log('Successfully fetched live reservation data from Teburio');
       return convertTeburioToInternalFormat(teburioData);
+    } else {
+      console.log('No reservations returned from Teburio, using fallback data');
     }
-  } catch (error) {
-    console.log('Failed to fetch from Teburio, using static data:', error);
+      } catch (error) {
+      console.log('Failed to fetch from Teburio, using static data:', error instanceof Error ? error.message : String(error));
   }
   
   // Fallback to static data
@@ -93,6 +103,11 @@ export async function getLiveReservationData(): Promise<ReservationData> {
 export async function formatReservationDataForCustomers(): Promise<string> {
   const data = await getLiveReservationData();
   
+  // Check if we have real data from Teburio
+  if (data.last_updated === 'never' || data.updated_by === 'none') {
+    return "**CURRENT AVAILABILITY:**\n\nReservation system is currently unavailable. For current availability and bookings, please contact staff directly or visit https://www.castlepub.de/reservemitte\n";
+  }
+  
   let formatted = "**CURRENT AVAILABILITY:**\n\n";
   
   // Room availability (customer-friendly)
@@ -101,7 +116,9 @@ export async function formatReservationDataForCustomers(): Promise<string> {
     const roomName = room.replace('_', ' ').replace(/\b\w/g, l => l.toUpperCase());
     formatted += `• ${roomName} (${availability.capacity} capacity): `;
     
-    if (availability.current_bookings_today === 0) {
+    if (availability.next_available === 'unknown') {
+      formatted += `Check with staff for availability\n`;
+    } else if (availability.current_bookings_today === 0) {
       formatted += `Available now - no reservations today\n`;
     } else if (availability.next_available === 'now') {
       formatted += `Available now\n`;
@@ -113,7 +130,7 @@ export async function formatReservationDataForCustomers(): Promise<string> {
   });
   
   // General availability info
-  if (data.daily_stats?.today) {
+  if (data.daily_stats?.today && data.daily_stats.today.busiest_time !== 'unknown') {
     const totalReservations = data.daily_stats.today.total_reservations;
     const busyLevel = totalReservations === 0 ? 'quiet' : 
                      totalReservations <= 2 ? 'moderate' : 'busy';
@@ -136,6 +153,12 @@ export async function formatReservationDataForCustomers(): Promise<string> {
  */
 export async function formatReservationDataForStaff(): Promise<string> {
   const data = await getLiveReservationData();
+  
+  // Check if we have real data from Teburio
+  if (data.last_updated === 'never' || data.updated_by === 'none') {
+    return "**STAFF RESERVATION OVERVIEW:**\n\nI don't have access to current reservation data. The Teburio system connection is not working. Please check the reservation system directly or contact IT support.\n\n**AVAILABLE ROOM CAPACITIES:**\n• Middle Room: 50 capacity\n• Back Room: 30 capacity\n• Front Room: 30 capacity\n• Beer Garden: 50 capacity\n";
+  }
+  
   const today = new Date().toISOString().split('T')[0];
   const todaysReservations = data.current_reservations[today] || [];
   
@@ -179,14 +202,16 @@ export async function formatReservationDataForStaff(): Promise<string> {
   }
   
   // Last updated info
-  const lastUpdated = new Date(data.last_updated).toLocaleString('en-GB', {
-    timeZone: 'Europe/Berlin',
-    day: '2-digit',
-    month: '2-digit',
-    hour: '2-digit',
-    minute: '2-digit'
-  });
-  formatted += `\n**Data last updated:** ${lastUpdated}\n`;
+  if (data.last_updated !== 'never') {
+    const lastUpdated = new Date(data.last_updated).toLocaleString('en-GB', {
+      timeZone: 'Europe/Berlin',
+      day: '2-digit',
+      month: '2-digit',
+      hour: '2-digit',
+      minute: '2-digit'
+    });
+    formatted += `\n**Data last updated:** ${lastUpdated}\n`;
+  }
   
   return formatted;
 }
