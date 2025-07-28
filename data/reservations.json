@@ -1,0 +1,64 @@
+{
+  "current_reservations": {
+    "2024-12-21": [
+      {
+        "time": "18:00",
+        "party_size": 8,
+        "room": "Middle Room",
+        "name": "Schmidt Party",
+        "status": "confirmed",
+        "special_requests": "Birthday celebration"
+      },
+      {
+        "time": "19:30",
+        "party_size": 4,
+        "room": "Back Room",
+        "name": "Business Dinner",
+        "status": "confirmed",
+        "special_requests": "Quiet area requested"
+      }
+    ],
+    "2024-12-22": [
+      {
+        "time": "17:00",
+        "party_size": 12,
+        "room": "Beer Garden",
+        "name": "Company Event",
+        "status": "confirmed",
+        "special_requests": "Team building event"
+      }
+    ]
+  },
+  "room_availability": {
+    "middle_room": {
+      "capacity": 50,
+      "current_bookings_today": 1,
+      "next_available": "20:30"
+    },
+    "back_room": {
+      "capacity": 30,
+      "current_bookings_today": 1,
+      "next_available": "21:00"
+    },
+    "front_room": {
+      "capacity": 30,
+      "current_bookings_today": 0,
+      "next_available": "now"
+    },
+    "beer_garden": {
+      "capacity": 50,
+      "current_bookings_today": 1,
+      "next_available": "19:00"
+    }
+  },
+  "daily_stats": {
+    "today": {
+      "total_reservations": 3,
+      "total_guests": 24,
+      "busiest_time": "18:00-20:00",
+      "rooms_booked": ["Middle Room", "Back Room", "Beer Garden"]
+    }
+  },
+  "last_updated": "2024-12-21T15:30:00Z",
+  "updated_by": "staff"
+} 

@@ -463,11 +463,22 @@ export function formatContactData(): string {
 export async function getAllFormattedData(): Promise<string> {
   const eventsData = await formatEventsData();
   
+  // Import reservation data formatting
+  let reservationData = '';
+  try {
+    const { formatReservationDataForGPT } = await import('./fetchReservationData');
+    reservationData = await formatReservationDataForGPT();
+  } catch (error) {
+    console.log('Reservation data not available:', error);
+    reservationData = '**RESERVATIONS:** Contact staff for current availability.';
+  }
+  
   return [
     getCurrentTimeContext(),
     formatHoursData(),
     formatMenuData(),
     eventsData,
+    reservationData,
     formatFAQData(),
     formatContactData(),
     formatLoyaltyData()
