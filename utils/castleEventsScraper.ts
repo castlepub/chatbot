@@ -82,6 +82,70 @@ export class CastleEventsScraper {
       const events = await this.page.evaluate(() => {
         const results: CastleEvent[] = [];
         
+        // Helper function to extract event info
+        function extractEventInfo(text: string, html: string): CastleEvent {
+          // Date patterns
+          const datePatterns = [
+            /\b(Jan|Feb|Mar|Apr|May|Jun|Jul|Aug|Sep|Oct|Nov|Dec)\s+\d{1,2}\b/,
+            /\b\d{1,2}\/\d{1,2}\b/,
+            /\b\d{1,2}\.\d{1,2}\b/,
+            /\b\d{1,2}-\d{1,2}\b/
+          ];
+
+          // Time patterns
+          const timePatterns = [
+            /\b\d{1,2}:\d{2}\s*[AP]M\b/,
+            /\b\d{1,2}:\d{2}\b/
+          ];
+
+          // Find date
+          let date = '';
+          for (const pattern of datePatterns) {
+            const match = text.match(pattern);
+            if (match) {
+              date = match[0];
+              break;
+            }
+          }
+
+          // Find time
+          let time = '';
+          for (const pattern of timePatterns) {
+            const match = text.match(pattern);
+            if (match) {
+              time = match[0];
+              break;
+            }
+          }
+
+          // Extract event name (first line or prominent text)
+          const lines = text.split('\n').filter(line => line.trim().length > 0);
+          let name = lines[0] || 'Castle Event';
+          
+          // Clean up the name
+          name = name.replace(/^\s*[-•*]\s*/, '').trim();
+          
+          // Determine event type
+          let type: 'regular' | 'special' | 'sports' = 'regular';
+          const lowerText = text.toLowerCase();
+          
+          if (lowerText.includes('quiz') || lowerText.includes('castle quiz')) {
+            type = 'regular';
+          } else if (lowerText.includes('uefa') || lowerText.includes('champions league') || lowerText.includes('football') || lowerText.includes('soccer')) {
+            type = 'sports';
+          } else if (lowerText.includes('pub talk') || lowerText.includes('special')) {
+            type = 'special';
+          }
+
+          return {
+            name,
+            date,
+            time,
+            type,
+            description: text.length > 100 ? text.substring(0, 100) + '...' : text
+          };
+        }
+        
         // Look for event elements - try multiple selectors
         const eventSelectors = [
           'article', '.event', '.event-item', '.event-card',
@@ -108,7 +172,8 @@ export class CastleEventsScraper {
           const allElements = document.querySelectorAll('*');
           const datePattern = /\b(Jan|Feb|Mar|Apr|May|Jun|Jul|Aug|Sep|Oct|Nov|Dec)\s+\d{1,2}\b|\b\d{1,2}\/\d{1,2}\b|\b\d{1,2}\.\d{1,2}\b/;
           
-          for (const element of allElements) {
+          for (let i = 0; i < allElements.length; i++) {
+            const element = allElements[i];
             const text = element.textContent?.trim();
             if (text && datePattern.test(text) && text.length < 200) {
               console.log(`Found potential event element: "${text}"`);
@@ -118,7 +183,8 @@ export class CastleEventsScraper {
         }
 
         // Process each event element
-        eventElements.forEach((element, index) => {
+        for (let index = 0; index < eventElements.length; index++) {
+          const element = eventElements[index];
           try {
             const text = element.textContent?.trim() || '';
             const html = element.innerHTML;
@@ -126,7 +192,7 @@ export class CastleEventsScraper {
             console.log(`Processing event ${index + 1}: "${text.substring(0, 100)}..."`);
             
             // Extract event information using various patterns
-            const eventInfo = this.extractEventInfo(text, html);
+            const eventInfo = extractEventInfo(text, html);
             
             if (eventInfo.name) {
               results.push(eventInfo);
@@ -135,7 +201,7 @@ export class CastleEventsScraper {
           } catch (error) {
             console.error(`Error processing event ${index + 1}:`, error);
           }
-        });
+        }
 
         return results;
       });
@@ -149,71 +215,7 @@ export class CastleEventsScraper {
     }
   }
 
-  /**
-   * Extract event information from text and HTML
-   */
-  private extractEventInfo(text: string, html: string): CastleEvent {
-    // Date patterns
-    const datePatterns = [
-      /\b(Jan|Feb|Mar|Apr|May|Jun|Jul|Aug|Sep|Oct|Nov|Dec)\s+\d{1,2}\b/,
-      /\b\d{1,2}\/\d{1,2}\b/,
-      /\b\d{1,2}\.\d{1,2}\b/,
-      /\b\d{1,2}-\d{1,2}\b/
-    ];
 
-    // Time patterns
-    const timePatterns = [
-      /\b\d{1,2}:\d{2}\s*[AP]M\b/,
-      /\b\d{1,2}:\d{2}\b/
-    ];
-
-    // Find date
-    let date = '';
-    for (const pattern of datePatterns) {
-      const match = text.match(pattern);
-      if (match) {
-        date = match[0];
-        break;
-      }
-    }
-
-    // Find time
-    let time = '';
-    for (const pattern of timePatterns) {
-      const match = text.match(pattern);
-      if (match) {
-        time = match[0];
-        break;
-      }
-    }
-
-    // Extract event name (first line or prominent text)
-    const lines = text.split('\n').filter(line => line.trim().length > 0);
-    let name = lines[0] || 'Castle Event';
-    
-    // Clean up the name
-    name = name.replace(/^\s*[-•*]\s*/, '').trim();
-    
-    // Determine event type
-    let type: 'regular' | 'special' | 'sports' = 'regular';
-    const lowerText = text.toLowerCase();
-    
-    if (lowerText.includes('quiz') || lowerText.includes('castle quiz')) {
-      type = 'regular';
-    } else if (lowerText.includes('uefa') || lowerText.includes('champions league') || lowerText.includes('football') || lowerText.includes('soccer')) {
-      type = 'sports';
-    } else if (lowerText.includes('pub talk') || lowerText.includes('special')) {
-      type = 'special';
-    }
-
-    return {
-      name,
-      date,
-      time,
-      type,
-      description: text.length > 100 ? text.substring(0, 100) + '...' : text
-    };
-  }
 
   /**
    * Clean up browser resources
