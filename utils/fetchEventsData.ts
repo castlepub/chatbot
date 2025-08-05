@@ -32,14 +32,34 @@ interface EventsData {
     specialties: string[];
     events_page?: string;
   };
+  last_updated?: string;
+  updated_by?: string;
 }
 
 /**
  * Fetch current events from Castle Pub website
- * This function scrapes the events page to get real-time event data
+ * This function uses the Castle Events scraper to get real-time event data
  */
 export async function fetchEventsFromWebsite(): Promise<Partial<EventsData>> {
   try {
+    // Try to use the Castle Events scraper if available
+    try {
+      const { fetchCastleEvents, convertEventsToJsonFormat } = await import('./castleEventsScraper');
+      const scrapedEvents = await fetchCastleEvents();
+      
+      if (scrapedEvents.length > 0) {
+        console.log(`Successfully scraped ${scrapedEvents.length} events from website`);
+        const convertedEvents = convertEventsToJsonFormat(scrapedEvents);
+        return {
+          upcoming_events: convertedEvents.upcoming_events,
+          venue_info: convertedEvents.venue_info
+        };
+      }
+    } catch (scraperError) {
+      console.log('Scraper not available, falling back to basic fetch:', scraperError instanceof Error ? scraperError.message : String(scraperError));
+    }
+    
+    // Fallback to basic fetch if scraper fails
     const response = await fetch('https://www.castlepub.de/events');
     const html = await response.text();
     
@@ -169,34 +189,68 @@ function getNextMonday(): Date {
 }
 
 /**
- * Get events data - tries to fetch from website first, falls back to static data
+ * Get events data - uses updated events.json file with current events from website
  */
 export async function getCurrentEventsData(): Promise<EventsData> {
   try {
-    console.log('Attempting to fetch events from Castle Pub website...');
-    // Try to fetch from website
+    console.log('Loading current events data from updated events.json...');
+    
+    // Load the updated events.json file (which now contains current events from website)
+    const staticEvents = await import('../data/events.json');
+    const eventsData = staticEvents.default as unknown as EventsData;
+    
+    // Check if the data was recently updated
+    const lastUpdated = eventsData.last_updated || eventsData.venue_info?.events_page;
+    if (lastUpdated) {
+      console.log('Using updated events data from events.json');
+      return eventsData;
+    }
+    
+    // If no recent update, try to fetch from website
+    console.log('Events data not recently updated, attempting to fetch from website...');
     const websiteEvents = await fetchEventsFromWebsite();
     
     if (websiteEvents.upcoming_events && Object.keys(websiteEvents.upcoming_events).length > 0) {
       console.log('Successfully fetched events from website');
       
       // Merge website events with static regular features
-      const staticEvents = await import('../data/events.json');
-      const staticData = staticEvents.default as unknown as EventsData;
-      
       return {
-        regular_features: staticData.regular_features,
-        special_features: staticData.special_features,
+        regular_features: eventsData.regular_features,
+        special_features: eventsData.special_features,
         upcoming_events: websiteEvents.upcoming_events,
-        venue_info: websiteEvents.venue_info || staticData.venue_info
+        venue_info: websiteEvents.venue_info || eventsData.venue_info
       } as EventsData;
     }
+    
+    // Fallback to static data
+    console.log('Using static events data as fallback');
+    return eventsData;
+    
   } catch (error) {
-    console.log('Website events fetch failed, using static data:', error instanceof Error ? error.message : String(error));
+    console.log('Error loading events data, using fallback:', error instanceof Error ? error.message : String(error));
+    
+    // Final fallback to static data
+    try {
+      const staticEvents = await import('../data/events.json');
+      return staticEvents.default as unknown as EventsData;
+    } catch (fallbackError) {
+      console.error('Failed to load even fallback events data:', fallbackError);
+      // Return minimal data structure
+      return {
+        regular_features: {
+          quiz_night: {
+            name: "Castle Quiz",
+            description: "Weekly pub quiz in English & German",
+            schedule: "Every Monday at 8:00 PM (20:00)"
+          }
+        },
+        special_features: {},
+        venue_info: {
+          atmosphere: "Casual, friendly neighborhood pub",
+          location: "Heart of Berlin Mitte",
+          specialties: ["Craft Beer", "Neapolitan Pizza", "Sports Viewing", "Beer Garden", "Quiz Nights"]
+        }
+      } as EventsData;
+    }
   }
-  
-  // Fallback to static data
-  console.log('Using static events data as fallback');
-  const staticEvents = await import('../data/events.json');
-  return staticEvents.default as unknown as EventsData;
 } 

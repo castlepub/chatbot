@@ -1,0 +1,5 @@
+warning: in the working copy of 'data/events.json', LF will be replaced by CRLF the next time Git touches it
+config/chatbot.js
+data/events.json
+pages/api/gpt.ts
+utils/fetchEventsData.ts

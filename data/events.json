@@ -19,7 +19,7 @@
     "quiz_night": {
       "name": "Castle Quiz",
       "description": "Weekly pub quiz in English & German",
-      "schedule": "Every Monday at 8:00 PM",
+      "schedule": "Every Monday at 8:00 PM (20:00)",
       "note": "Great fun for groups and individuals"
     }
   },
@@ -37,71 +37,70 @@
     }
   },
   "upcoming_events": {
-    "december_2024": {
-      "castle_quiz_dec23": {
-        "name": "Castle Quiz",
-        "date": "December 23, 2024",
-        "time": "7:00 PM",
-        "description": "Weekly pub quiz in English & German - last quiz before Christmas!"
+    "august_2025": {
+      "pub_talk_democracy_aug10": {
+        "name": "Pub Talk-Democracy at Risk",
+        "date": "August 10, 2025",
+        "time": "TBD",
+        "description": "Join us for an engaging discussion about democracy at The Castle Pub",
+        "location": "Berlin"
       },
-      "castle_quiz_dec30": {
+      "castle_quiz_aug11": {
         "name": "Castle Quiz",
-        "date": "December 30, 2024",
-        "time": "7:00 PM",
-        "description": "Weekly pub quiz in English & German - New Year's Eve special!"
-      }
-    },
-    "january_2025": {
-      "castle_quiz_jan6": {
-        "name": "Castle Quiz",
-        "date": "January 6, 2025",
-        "time": "7:00 PM",
-        "description": "Weekly pub quiz in English & German - first quiz of the new year!"
-      },
-      "castle_quiz_jan13": {
-        "name": "Castle Quiz",
-        "date": "January 13, 2025",
-        "time": "7:00 PM",
-        "description": "Weekly pub quiz in English & German"
-      },
-      "castle_quiz_jan20": {
-        "name": "Castle Quiz",
-        "date": "January 20, 2025",
-        "time": "7:00 PM",
-        "description": "Weekly pub quiz in English & German"
-      },
-      "castle_quiz_jan27": {
-        "name": "Castle Quiz",
-        "date": "January 27, 2025",
-        "time": "7:00 PM",
+        "date": "August 11, 2025",
+        "time": "8:00 PM",
         "description": "Weekly pub quiz in English & German"
       }
     },
     "july_2025": {
-      "uefa_womens_euro": {
+      "uefa_womens_euro_july27": {
         "name": "UEFA Women's Euro 2025",
         "date": "July 27, 2025",
         "time": "6:00 PM",
-        "description": "Watch the exciting UEFA Women's Euro 2025 matches"
+        "description": "Watch the exciting UEFA Women's Euro 2025 matches at The Castle Pub Berlin"
+      }
+    },
+    "june_2025": {
+      "spain_france_nations_league_june5": {
+        "name": "Spain vs. France UEFA Nations League Semi Finals",
+        "date": "June 5, 2025",
+        "time": "TBD",
+        "description": "Watch the UEFA Nations League Semi Finals match between Spain and France"
       },
-      "castle_quiz_july28": {
-        "name": "Castle Quiz",
-        "date": "July 28, 2025",
-        "time": "7:00 PM",
-        "description": "Weekly pub quiz in English & German"
+      "germany_portugal_nations_league_june4": {
+        "name": "Germany Vs. Portugal UEFA Nations League",
+        "date": "June 4, 2025",
+        "time": "TBD",
+        "description": "Watch the UEFA Nations League match between Germany and Portugal"
+      }
+    },
+    "may_2025": {
+      "champions_league_finale_may31": {
+        "name": "Champions League - Finale",
+        "date": "May 31, 2025",
+        "time": "TBD",
+        "description": "Watch the Champions League Final at The Castle Berlin Mitte"
       },
-      "castle_quiz_august4": {
-        "name": "Castle Quiz",
-        "date": "August 4, 2025",
-        "time": "7:00 PM",
-        "description": "Weekly pub quiz in English & German"
+      "dfb_pokal_finale_may24": {
+        "name": "DFB Pokal Finale",
+        "date": "May 24, 2025",
+        "time": "TBD",
+        "description": "Watch the DFB Pokal Final at The Castle Pub"
       }
     }
   },
   "venue_info": {
     "atmosphere": "Casual, friendly neighborhood pub",
     "location": "Heart of Berlin Mitte",
-    "specialties": ["Craft Beer", "Neapolitan Pizza", "Sports Viewing", "Beer Garden", "Quiz Nights"],
+    "specialties": [
+      "Craft Beer",
+      "Neapolitan Pizza",
+      "Sports Viewing",
+      "Beer Garden",
+      "Quiz Nights"
+    ],
     "events_page": "https://www.castlepub.de/events"
-  }
-} 
+  },
+  "last_updated": "2025-08-05T10:54:14.754Z",
+  "updated_by": "manual_update_from_website"
+}
