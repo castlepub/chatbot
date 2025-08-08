@@ -242,10 +242,17 @@ IMPORTANT: Always leave a space between the URL and any punctuation that follows
     const lowerMsg = message.toLowerCase();
     const reservationIntent = /(reserve|reservation|book( a)? table|booking)/i.test(lowerMsg);
     if (reservationIntent) {
-      const hasLink = /castlepub\.de\/reservemitte/i.test(fixedResponse);
-      const invite = "You can book online here: https://www.castlepub.de/reservemitte\nOr say 'book here' and I’ll handle the reservation now.";
-      if (!hasLink || !/book here/i.test(fixedResponse)) {
-        fixedResponse = `${fixedResponse}\n\n${invite}`.trim();
+      const hasLink = /https?:\/\/www\.castlepub\.de\/reservemitte/i.test(fixedResponse);
+      const hasInvite = /book here/i.test(fixedResponse);
+      const inviteBoth = "You can book online here: https://www.castlepub.de/reservemitte\nOr say 'book here' and I’ll handle the reservation now.";
+      const inviteOnly = "Or say 'book here' and I’ll handle the reservation now.";
+
+      if (!hasInvite) {
+        if (hasLink) {
+          fixedResponse = `${fixedResponse}\n\n${inviteOnly}`.trim();
+        } else {
+          fixedResponse = `${fixedResponse}\n\n${inviteBoth}`.trim();
+        }
       }
     }
 
