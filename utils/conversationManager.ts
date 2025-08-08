@@ -52,18 +52,87 @@ function normalizeTime(input: string): string | null {
 }
 
 function normalizeDate(input: string): string | null {
-  // Accept YYYY-MM-DD or common text like 'today', 'tomorrow'
+  // Accept European style and natural month names; year optional
   const s = input.trim().toLowerCase();
   const today = toBerlinTime(new Date());
+
+  // today / tomorrow shortcuts
   if (s === 'today') return today.toISOString().slice(0, 10);
   if (s === 'tomorrow') {
     const d = new Date(today);
     d.setDate(d.getDate() + 1);
     return d.toISOString().slice(0, 10);
   }
-  const iso = s.match(/^(\d{4})-(\d{2})-(\d{2})$/);
-  if (iso) return `${iso[1]}-${iso[2]}-${iso[3]}`;
+
+  // YYYY-MM-DD (ISO)
+  const iso = s.match(/^(\d{4})-(\d{1,2})-(\d{1,2})$/);
+  if (iso) {
+    const y = Number(iso[1]);
+    const m = Number(iso[2]);
+    const d = Number(iso[3]);
+    if (isValidYMD(y, m, d)) return `${y.toString().padStart(4, '0')}-${pad2(m)}-${pad2(d)}`;
+  }
+
+  // DD[./-]MM([./-]YYYY)?
+  const dm = s.match(/^(\d{1,2})[.\/-](\d{1,2})(?:[.\/-](\d{2,4}))?$/);
+  if (dm) {
+    const d = Number(dm[1]);
+    const m = Number(dm[2]);
+    const y = dm[3] ? normalizeYear(dm[3]) : pickYearFuture(today, m, d);
+    if (isValidYMD(y, m, d)) return `${y}-${pad2(m)}-${pad2(d)}`;
+  }
+
+  // Natural month names: "8 aug" or "aug 8" (year optional)
+  const monthMap: Record<string, number> = {
+    jan: 1, january: 1,
+    feb: 2, february: 2,
+    mar: 3, march: 3,
+    apr: 4, april: 4,
+    may: 5,
+    jun: 6, june: 6,
+    jul: 7, july: 7,
+    aug: 8, august: 8,
+    sep: 9, sept: 9, september: 9,
+    oct: 10, october: 10,
+    nov: 11, november: 11,
+    dec: 12, december: 12,
+  };
+  // 8 aug [2025] or 08 august
+  let nat = s.match(/^(\d{1,2})\s+([a-zA-Z]+)(?:\s+(\d{2,4}))?$/);
+  if (nat) {
+    const d = Number(nat[1]);
+    const m = monthMap[nat[2].toLowerCase()];
+    const y = nat[3] ? normalizeYear(nat[3]) : (m ? pickYearFuture(today, m, d) : undefined);
+    if (m && y && isValidYMD(y, m, d)) return `${y}-${pad2(m)}-${pad2(d)}`;
+  }
+  // aug 8 [2025]
+  nat = s.match(/^([a-zA-Z]+)\s+(\d{1,2})(?:\s+(\d{2,4}))?$/);
+  if (nat) {
+    const m = monthMap[nat[1].toLowerCase()];
+    const d = Number(nat[2]);
+    const y = nat[3] ? normalizeYear(nat[3]) : (m ? pickYearFuture(today, m, d) : undefined);
+    if (m && y && isValidYMD(y, m, d)) return `${y}-${pad2(m)}-${pad2(d)}`;
+  }
+
   return null;
+}
+
+function pad2(n: number): string { return n.toString().padStart(2, '0'); }
+function normalizeYear(y: string): number {
+  const num = Number(y.length === 2 ? '20' + y : y);
+  return num;
+}
+function isValidYMD(y: number, m: number, d: number): boolean {
+  if (y < 1900 || m < 1 || m > 12 || d < 1 || d > 31) return false;
+  const dt = new Date(Date.UTC(y, m - 1, d));
+  return dt.getUTCFullYear() === y && dt.getUTCMonth() === m - 1 && dt.getUTCDate() === d;
+}
+function pickYearFuture(today: Date, month: number, day: number): number {
+  const thisYear = today.getFullYear();
+  const candidate = new Date(Date.UTC(thisYear, month - 1, day));
+  const todayUTC = new Date(Date.UTC(today.getFullYear(), today.getMonth(), today.getDate()));
+  if (candidate >= todayUTC) return thisYear;
+  return thisYear + 1;
 }
 
 function validateFutureDate(dateStr: string): boolean {
