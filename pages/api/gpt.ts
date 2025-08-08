@@ -2,6 +2,7 @@ import { NextApiRequest, NextApiResponse } from 'next';
 import OpenAI from 'openai';
 import { getAllFormattedData } from '../../utils/formatData';
 import { fetchBeerData, formatBeerDataForGPT } from '../../utils/fetchBeerData';
+import { ConversationManager, ConversationState } from '../../utils/conversationManager';
 
 // DEBUG: Log what API key we're loading
 console.log('=== API KEY DEBUG ===');
@@ -81,6 +82,7 @@ export interface ChatMessage {
 export interface ChatRequest {
   message: string;
   conversation?: ChatMessage[];
+  sessionId?: string;
 }
 
 export interface ChatResponse {
@@ -116,7 +118,7 @@ export default async function handler(
   }
 
   try {
-    const { message, conversation = [] }: ChatRequest = req.body;
+    const { message, conversation = [], sessionId }: ChatRequest = req.body;
 
     if (!message || typeof message !== 'string') {
       return res.status(400).json({
@@ -131,6 +133,49 @@ export default async function handler(
         response: '',
         error: 'ChatBot temporarily unavailable. Please try again later.'
       });
+    }
+
+    // In-memory session store for optional reservation flow over /api/gpt
+    (global as any).__castleSessions = (global as any).__castleSessions || new Map<string, { mode: 'gpt' | 'reservations'; state?: ConversationState; cm?: ConversationManager }>();
+    const sessions: Map<string, { mode: 'gpt' | 'reservations'; state?: ConversationState; cm?: ConversationManager }>
+      = (global as any).__castleSessions;
+    const sid = sessionId || String(req.headers['x-forwarded-for'] || req.socket.remoteAddress || 'anon');
+    let sess = sessions.get(sid);
+
+    // Reservation intent detection
+    const lowerMsg2 = message.toLowerCase();
+    const isReservationIntent2 = /(reserve|reservation|book( a)? table|booking)/i.test(lowerMsg2);
+    const isBookHere = /\b(book here|book now|do it here)\b/i.test(lowerMsg2);
+    const isCancel = /\b(cancel|stop)\b/i.test(lowerMsg2);
+
+    // If already in reservations mode, or user says 'book here', handle via ConversationManager
+    if ((sess && sess.mode === 'reservations') || isBookHere) {
+      if (!sess || sess.mode !== 'reservations') {
+        // start reservation session
+        const cm = new ConversationManager();
+        const state = await cm.start();
+        sess = { mode: 'reservations', state, cm };
+        sessions.set(sid, sess);
+        // seed first prompt
+        const first = await sess.cm!.handleInput(sess.state!, 'I want to book a table');
+        sess.state = first.state;
+        return res.status(200).json({ response: first.reply });
+      }
+
+      if (isCancel) {
+        sessions.set(sid, { mode: 'gpt' });
+        return res.status(200).json({ response: 'No problem. We can stop the booking here. If you change your mind, say "book here" anytime.' });
+      }
+
+      const step = await sess.cm!.handleInput(sess.state!, message);
+      sess.state = step.state;
+      // If confirmed, exit reservations mode
+      if (step.state.confirmed) {
+        sessions.set(sid, { mode: 'gpt' });
+      } else {
+        sessions.set(sid, sess);
+      }
+      return res.status(200).json({ response: step.reply });
     }
 
     // Get pub data efficiently
@@ -241,7 +286,7 @@ IMPORTANT: Always leave a space between the URL and any punctuation that follows
     // Reservation intent helper: always offer link + in-chat option
     const lowerMsg = message.toLowerCase();
     const reservationIntent = /(reserve|reservation|book( a)? table|booking)/i.test(lowerMsg);
-    if (reservationIntent) {
+    if (isReservationIntent2) {
       const hasLink = /https?:\/\/www\.castlepub\.de\/reservemitte/i.test(fixedResponse);
       const hasInvite = /book here/i.test(fixedResponse);
       const inviteBoth = "You can book online here: https://www.castlepub.de/reservemitte\nOr say 'book here' and I’ll handle the reservation now.";
