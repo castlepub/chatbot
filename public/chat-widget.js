@@ -4,7 +4,8 @@
 
   // Configuration
   const config = {
-    apiUrl: 'https://chatbot-production-ca03.up.railway.app/api/gpt', // Castle Pub Railway URL
+    gptUrl: 'https://chatbot-production-ca03.up.railway.app/api/gpt',
+    reservationsUrl: 'https://chatbot-production-ca03.up.railway.app/api/reservations',
     widgetTitle: 'Castle Pub Concierge',
     welcomeMessage: 'Hi! I\'m your Castle Pub assistant. How can I help you today?',
     placeholder: 'Ask me anything about Castle Pub...',
@@ -214,33 +215,54 @@
     messages.appendChild(typingDiv);
     messages.scrollTop = messages.scrollHeight;
 
-    try {
-      const response = await fetch(config.apiUrl, {
-        method: 'POST',
-        headers: {
-          'Content-Type': 'application/json',
-        },
-        body: JSON.stringify({
-          message: message,
-          conversation: [] // You can implement conversation history here
-        })
-      });
+    // Simple intent detect for reservations
+    const lower = message.toLowerCase();
+    const isReservationIntent = /\b(reserve|reservation|book( a)? table|booking)\b/.test(lower);
 
-      const data = await response.json();
-      
+    // Maintain mode and session
+    window.__castleMode = window.__castleMode || 'gpt';
+    window.__castleSession = window.__castleSession || ('cw-' + Math.random().toString(36).slice(2));
+    window.__awaitingReservationChoice = window.__awaitingReservationChoice || false;
+
+    // If user asks about reservations while in GPT mode, offer both options
+    if (window.__castleMode === 'gpt' && isReservationIntent && !window.__awaitingReservationChoice) {
       // Remove typing indicator
-      const typingIndicator = document.getElementById('typing-indicator');
-      if (typingIndicator) {
-        typingIndicator.remove();
-      }
+      const typingIndicatorX = document.getElementById('typing-indicator');
+      if (typingIndicatorX) typingIndicatorX.remove();
+      addMessage(
+        'You can book online here: https://www.castlepub.de/reservemitte\nOr say "book here" and I\'ll handle the reservation now.',
+        'bot'
+      );
+      window.__awaitingReservationChoice = true;
+      return;
+    }
 
-      // Add bot response
-      if (data.response) {
-        addMessage(data.response, 'bot');
+    // If user opts to book here, switch to reservations mode and start flow
+    if (window.__awaitingReservationChoice && /\b(book here|book now|do it here)\b/.test(lower)) {
+      window.__castleMode = 'reservations';
+      window.__awaitingReservationChoice = false;
+      // Fall through to reservations call with a starter message
+      await callReservationsApi('I want to book a table');
+      return;
+    }
+
+    try {
+      if (window.__castleMode === 'reservations') {
+        await callReservationsApi(message);
       } else {
-        addMessage('Sorry, I\'m having trouble right now. Please try again.', 'bot');
-      }
+        const response = await fetch(config.gptUrl, {
+          method: 'POST',
+          headers: { 'Content-Type': 'application/json' },
+          body: JSON.stringify({ message, conversation: [] })
+        });
+        const data = await response.json();
 
+        // Remove typing indicator
+        const typingIndicator = document.getElementById('typing-indicator');
+        if (typingIndicator) typingIndicator.remove();
+
+        addMessage(data.response || 'Sorry, I\'m having trouble right now. Please try again.', 'bot');
+      }
     } catch (error) {
       console.error('Chat API Error:', error);
       
@@ -253,6 +275,36 @@
       addMessage('Sorry, I\'m having trouble connecting. Please try again later.', 'bot');
     }
   };
+
+  async function callReservationsApi(userMessage) {
+    // Show typing indicator (ensure present)
+    const messages = document.getElementById('castle-messages');
+    let typingIndicator = document.getElementById('typing-indicator');
+    if (!typingIndicator) {
+      typingIndicator = document.createElement('div');
+      typingIndicator.id = 'typing-indicator';
+      typingIndicator.style.cssText = 'margin-bottom:10px;display:flex;justify-content:flex-start;';
+      typingIndicator.innerHTML = '<div style="padding:10px 15px;border-radius:18px;background:white;color:#333;box-shadow:0 2px 4px rgba(0,0,0,0.1);"><span style="font-style: italic;">Typing...</span></div>';
+      messages.appendChild(typingIndicator);
+      messages.scrollTop = messages.scrollHeight;
+    }
+
+    const resp = await fetch(config.reservationsUrl, {
+      method: 'POST',
+      headers: { 'Content-Type': 'application/json' },
+      body: JSON.stringify({ sessionId: window.__castleSession, message: userMessage })
+    });
+    const data = await resp.json();
+
+    const typingIndicator2 = document.getElementById('typing-indicator');
+    if (typingIndicator2) typingIndicator2.remove();
+
+    if (data && data.reply) {
+      addMessage(data.reply, 'bot');
+    } else {
+      addMessage('Sorry, I\'m having trouble with bookings right now. You can use the website: https://www.castlepub.de/reservemitte', 'bot');
+    }
+  }
 
   // Initialize widget when page loads
   if (document.readyState === 'loading') {

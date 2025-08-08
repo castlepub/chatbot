@@ -170,20 +170,13 @@ export class ConversationManager {
         const phone = userInput.trim();
         if (phone.length < 5) return { state, reply: 'Please provide a valid phone number.' };
         state.slots.phone = phone;
-        return { state, reply: 'Any notes or special requests? (optional). If none, reply "none".' };
-      }
 
-      if (!state.slots.notes) {
-        const notes = userInput.trim();
-        state.slots.notes = notes.toLowerCase() === 'none' ? '' : notes;
-
-        // Confirm details
+        // Skip notes; go straight to confirmation
         const summary = `Please confirm: ${state.slots.date} at ${state.slots.time} for ${state.slots.party_size}.
 Name: ${state.slots.customer_name}
 Email: ${state.slots.email}
 Phone: ${state.slots.phone}
 Room: ${state.slots.room_id ? state.slots.room_id : 'No preference'}
-Notes: ${state.slots.notes || '—'}
 Reply "confirm" to book or say what to change (date/time/party/room).`;
         return { state, reply: summary };
       }

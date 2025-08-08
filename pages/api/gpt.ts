@@ -164,6 +164,18 @@ ${beerData}
 
 Remember: You're the Castle Concierge - helpful but with attitude. Make guests feel welcome while keeping that Berlin edge!`;
 
+    // Simple duplicate-message short-circuit (within 15s) to avoid reprocessing
+    const cacheKey = `lastMsg:${req.headers['x-forwarded-for'] || req.socket.remoteAddress || 'anon'}`;
+    // naive in-memory store
+    (global as any).__castleMsgCache = (global as any).__castleMsgCache || new Map<string, { msg: string; ts: number }>();
+    const msgCache: Map<string, { msg: string; ts: number }> = (global as any).__castleMsgCache;
+    const prev = msgCache.get(cacheKey);
+    const nowTs = Date.now();
+    if (prev && prev.msg === message && nowTs - prev.ts < 15000) {
+      return res.status(200).json({ response: 'One sec, I\'m already on it…' });
+    }
+    msgCache.set(cacheKey, { msg: message, ts: nowTs });
+
     // Prepare conversation history for OpenAI
     const messages: OpenAI.Chat.ChatCompletionMessageParam[] = [
       {

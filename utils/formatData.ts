@@ -226,9 +226,14 @@ export function formatHoursData(): string {
  * Format events data for GPT context
  */
 export async function formatEventsData(): Promise<string> {
+  // Cache events formatting to avoid per-request recomputation
+  if (_eventsCacheText && Date.now() - _eventsCacheTime < EVENTS_CACHE_MS) {
+    return _eventsCacheText;
+  }
+
   // Import the dynamic events fetching
   const { getCurrentEventsData } = await import('./fetchEventsData');
-  
+
   // Get current events data (from website or fallback to static)
   const currentEventsData = await getCurrentEventsData();
   
@@ -291,7 +296,10 @@ export async function formatEventsData(): Promise<string> {
     }
   }
   
-  return formatted;
+  // Update cache
+  _eventsCacheText = formatted;
+  _eventsCacheTime = Date.now();
+  return _eventsCacheText;
 }
 
 /**
@@ -461,6 +469,11 @@ export function formatContactData(): string {
  * Combine all data for GPT system prompt
  */
 export async function getAllFormattedData(): Promise<string> {
+  // Return cached bundle if still fresh
+  if (_allCacheText && Date.now() - _allCacheTime < ALL_CACHE_MS) {
+    return _allCacheText;
+  }
+
   const eventsData = await formatEventsData();
   
   // Import reservation data formatting (customer-safe version)
@@ -473,7 +486,7 @@ export async function getAllFormattedData(): Promise<string> {
     reservationData = '**AVAILABILITY:** Contact staff for current seating information.';
   }
   
-  return [
+  const combined = [
     getCurrentTimeContext(),
     formatHoursData(),
     formatMenuData(),
@@ -483,4 +496,20 @@ export async function getAllFormattedData(): Promise<string> {
     formatContactData(),
     formatLoyaltyData()
   ].join('\n\n---\n\n');
+
+  // Cache combined context
+  _allCacheText = combined;
+  _allCacheTime = Date.now();
+  return combined;
 } 
+
+// -----------------
+// In-memory caches
+// -----------------
+let _eventsCacheText = '';
+let _eventsCacheTime = 0;
+const EVENTS_CACHE_MS = 5 * 60 * 1000; // 5 minutes
+
+let _allCacheText = '';
+let _allCacheTime = 0;
+const ALL_CACHE_MS = 5 * 60 * 1000; // 5 minutes
