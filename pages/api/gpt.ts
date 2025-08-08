@@ -236,7 +236,18 @@ IMPORTANT: Always leave a space between the URL and any punctuation that follows
       "Sorry, I'm having a moment here. Try asking me again?";
 
     // Fix links in the response before sending
-    const fixedResponse = fixLinks(response);
+    let fixedResponse = fixLinks(response);
+
+    // Reservation intent helper: always offer link + in-chat option
+    const lowerMsg = message.toLowerCase();
+    const reservationIntent = /(reserve|reservation|book( a)? table|booking)/i.test(lowerMsg);
+    if (reservationIntent) {
+      const hasLink = /castlepub\.de\/reservemitte/i.test(fixedResponse);
+      const invite = "You can book online here: https://www.castlepub.de/reservemitte\nOr say 'book here' and I’ll handle the reservation now.";
+      if (!hasLink || !/book here/i.test(fixedResponse)) {
+        fixedResponse = `${fixedResponse}\n\n${invite}`.trim();
+      }
+    }
 
     // Send notification about bot usage (don't await to avoid blocking the response)
     sendBotUsageNotification(message, fixedResponse, req).catch(error => {
