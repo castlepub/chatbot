@@ -71,7 +71,7 @@ castle-concierge-chatbot/
 The chatbot knows about:
 
 ### 🍕 **Menu**
-- Food: Nachos, pizzas, burgers, wings
+- Food: Nachos, tasty pizzas, burgers, wings
 - Cocktails: Mojitos, Negronis, Old Fashioneds
 - Spirits: Whiskey, gin, vodka selections
 - **Live Beer Taps**: Rotating selection updated from API

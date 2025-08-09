@@ -44,8 +44,8 @@
       ]
     },
     "pizza": {
-      "name": "Neapolitan Pizza",
-      "description": "Fresh, authentic Neapolitan pizzas made to order",
+      "name": "Tasty Pizza",
+      "description": "Fresh, tasty pizzas made to order",
       "items": [
         {
           "name": "The Tower",
@@ -60,7 +60,7 @@
         {
           "name": "Our Queen Margherita",
           "price": 9.50,
-          "description": "Classic Neapolitan margherita"
+          "description": "Classic margherita"
         },
         {
           "name": "Lady V",

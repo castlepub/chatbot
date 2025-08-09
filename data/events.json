@@ -31,9 +31,9 @@
       "info": "Check Untappd for current selection"
     },
     "pizza": {
-      "name": "Neapolitan Pizza",
-      "description": "Authentic Italian pizza made fresh to order",
-      "style": "Traditional Neapolitan style"
+      "name": "Tasty Pizza",
+      "description": "Delicious pizza made fresh to order",
+      "style": "Classic style"
     }
   },
   "upcoming_events": {
@@ -94,7 +94,7 @@
     "location": "Heart of Berlin Mitte",
     "specialties": [
       "Craft Beer",
-      "Neapolitan Pizza",
+      "Tasty Pizza",
       "Sports Viewing",
       "Beer Garden",
       "Quiz Nights"

@@ -71,7 +71,7 @@ export async function fetchEventsFromWebsite(): Promise<Partial<EventsData>> {
       venue_info: {
         atmosphere: "Casual, friendly neighborhood pub",
         location: "Heart of Berlin Mitte",
-        specialties: ["Craft Beer", "Neapolitan Pizza", "Sports Viewing", "Beer Garden", "Quiz Nights"],
+        specialties: ["Craft Beer", "Tasty Pizza", "Sports Viewing", "Beer Garden", "Quiz Nights"],
         events_page: "https://www.castlepub.de/events"
       }
     };
@@ -248,7 +248,7 @@ export async function getCurrentEventsData(): Promise<EventsData> {
         venue_info: {
           atmosphere: "Casual, friendly neighborhood pub",
           location: "Heart of Berlin Mitte",
-          specialties: ["Craft Beer", "Neapolitan Pizza", "Sports Viewing", "Beer Garden", "Quiz Nights"]
+          specialties: ["Craft Beer", "Tasty Pizza", "Sports Viewing", "Beer Garden", "Quiz Nights"]
         }
       } as EventsData;
     }

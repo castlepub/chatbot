@@ -380,16 +380,16 @@ export function convertEventsToJsonFormat(scrapedEvents: CastleEvent[]): any {
         info: "Check Untappd for current selection"
       },
       pizza: {
-        name: "Neapolitan Pizza",
-        description: "Authentic Italian pizza made fresh to order",
-        style: "Traditional Neapolitan style"
+        name: "Tasty Pizza",
+        description: "Delicious pizza made fresh to order",
+        style: "Classic style"
       }
     },
     upcoming_events: eventsByMonth,
     venue_info: {
       atmosphere: "Casual, friendly neighborhood pub",
       location: "Heart of Berlin Mitte",
-      specialties: ["Craft Beer", "Neapolitan Pizza", "Sports Viewing", "Beer Garden", "Quiz Nights"],
+      specialties: ["Craft Beer", "Tasty Pizza", "Sports Viewing", "Beer Garden", "Quiz Nights"],
       events_page: "https://www.castlepub.de/events"
     },
     last_updated: new Date().toISOString(),

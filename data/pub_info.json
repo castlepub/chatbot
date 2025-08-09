@@ -2,10 +2,10 @@
     "name": "The Castle Pub",
     "concept": {
         "type": "Self-service pub",
-        "description": "Laid-back Berlin pub with 20 rotating taps, Neapolitan pizza, cocktails, and quiz nights. A place to stay for a while — whether you're grabbing a pint, enjoying nachos with friends, or hanging out until late.",
+        "description": "Laid-back Berlin pub with 20 rotating taps, tasty pizza, cocktails, and quiz nights. A place to stay for a while — whether you're grabbing a pint, enjoying nachos with friends, or hanging out until late.",
         "key_features": [
             "20 rotating craft beers on tap",
-            "Authentic Neapolitan pizza",
+            "Tasty pizza",
             "Full cocktail menu",
             "Weekly pub quiz in English & German",
             "Beer garden",
@@ -19,8 +19,8 @@
         "city": "Berlin",
         "area": "Mitte",
         "transport": {
-            "nearest_station": "U6 Naturkundemuseum",
-            "walking_time": "5 minutes"
+            "nearest_station": "S Nordbahnhof",
+            "walking_time": "1 minute (right in front)"
         }
     },
     "contact": {

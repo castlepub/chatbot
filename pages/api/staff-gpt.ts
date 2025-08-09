@@ -33,7 +33,7 @@ CORE INFORMATION:
 - Located at Invalidenstraße 129, 10115 Berlin Mitte
 - Self-service pub concept - all orders at the bar
 - 20 rotating taps featuring craft and classic beers
-- Specializing in home made pizza
+- Specializing in tasty pizza
 - Spacious beer garden for outdoor dining
 - Proud sponsors of Berlin Irish Rugby Club
 
